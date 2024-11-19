@@ -1,0 +1,124 @@
+/* login.css */
+
+@font-face {
+    font-family: 'Paperlogy-2ExtraLight';      
+    src: url('/assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard';      
+    src: url('/assets/fonts/PretendardVariable.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #F4F5F7;
+}
+
+.banner {
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    width: 100%;
+    height: 85px;
+    border-bottom: 1px solid #000000;
+}
+
+.banner-text {
+    font-family: 'Sandoll GogoRound', 'Paperlogy-2ExtraLight', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 32px;
+    text-align: center;
+    color: #000000;
+}
+
+.center-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 85px); 
+    padding: 20px; 
+}
+
+.login-text {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 38.19px;
+    text-align: center;
+    color: #000000;
+    margin: 0 0 30px 0; 
+}
+
+.input-area {
+    width: 50%; 
+    max-width: 392px;
+    margin: 0 auto; 
+    display: flex;
+    flex-direction: column; 
+}
+
+.input-area label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 15px; 
+    font-weight: 600;
+    margin-top: 15px; 
+    margin-bottom: 5px; 
+    color: #000000;
+}
+
+.input-area input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px; 
+}
+
+.helper-text {
+    color: red;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.login-button {
+    width: 50%; 
+    max-width: 383px; 
+    padding: 10px;
+    background-color: #aaa0e5; 
+    color: #FFFFFF; 
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 20px; 
+    display: block;
+    text-align: center;
+    cursor: pointer;
+}
+
+.signup-link {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 8px; 
+    display: block; 
+}
+
+.signup-link a {
+    color: #000000; 
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline; 
+}
