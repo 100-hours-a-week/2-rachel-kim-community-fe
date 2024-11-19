@@ -2,14 +2,14 @@
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
-    src: url('assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
+    src: url('/assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Pretendard';      
-    src: url('assets/fonts/PretendardVariable.ttf') format('truetype');
+    src: url('/assets/fonts/PretendardVariable.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

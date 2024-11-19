@@ -1,15 +1,15 @@
-/* post-edit.css */
+/* post-create.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
-    src: url('assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
+    src: url('/assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Pretendard';      
-    src: url('assets/fonts/PretendardVariable.ttf') format('truetype');
+    src: url('/assets/fonts/PretendardVariable.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -66,7 +66,7 @@
     margin-top: 30px;
 }
 
-.post-edit-text {
+.post-create-text {
     font-family: 'Pretendard', sans-serif;
     font-size: 24px;
     font-weight: 700;
@@ -76,7 +76,7 @@
     margin-bottom: 30px; 
 }
 
-.post-edit-container {
+.post-create-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -158,11 +158,11 @@
     font-size: 13px;
 }
 
-.edit-button {
+.submit-button {
     width: 80%;
     max-width: 350px; 
     padding: 9px;
-    background-color: rgb(136, 90, 235); 
+    background-color: #aaa0e5; 
     color: #FFFFFF; 
     border: none;
     border-radius: 6px;
