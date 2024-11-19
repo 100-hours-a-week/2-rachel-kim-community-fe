@@ -243,3 +243,61 @@
     text-align: center;
     cursor: pointer;
 }
+
+.modal {
+    display: none;
+    width: 50%;
+    height: 100%;
+    margin: 10px;
+}
+
+.modal-content {
+    background-color: white; 
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.modal-content h2 {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 15px;
+    background-color: white;
+}
+
+.modal-content p {
+    font-size: 14px;
+    margin-bottom: 15px;
+    background-color: white;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background-color: white;
+}
+
+.cancel-button {
+    padding: 0 30px;
+    height: 30px;
+    background-color: black; 
+    color: white; 
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.confirm-button {
+    padding: 0 30px;
+    height: 30px;
+    background-color: #aaa0e5;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
