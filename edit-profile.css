@@ -1,4 +1,4 @@
-/* sign-up.css */
+/* edit-profile.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
@@ -40,13 +40,40 @@
     position: relative;  
 }
 
-.back-arrow {
-    font-family: sans-serif;
+.profile-img {
     position: absolute;  
-    left: calc(50% - 250px);  
-    font-size: 28px; 
-    font-weight: 400; 
-    color: #000000; 
+    right: calc(50% - 250px);  
+    cursor: pointer;
+    width: 36px;
+    height: 36px; 
+}
+
+.dropdown-menu {
+    /*display: none;*/
+    position: absolute;  
+    right: calc(50% - 250px);  
+    bottom: calc(50% - 135px);
+    background-color: #ccc;
+    list-style: none;
+    padding: 0 10px;
+}
+
+.dropdown-menu li {
+    padding: 8px 15px;
+    gap: 10px;
+    background-color: #ccc;
+    text-align: center;
+}
+
+.dropdown-menu a {
+    text-decoration: none;
+    color: black;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 14px;
+    background-color: #ccc;
+}
+
+.profile-img {
     cursor: pointer;
 }
 
@@ -58,7 +85,7 @@
     height: calc(100vh - 85px); 
 }
 
-.signup-text {
+.edit-profile-text {
     font-family: 'Pretendard', sans-serif;
     font-size: 32px;
     font-weight: 700;
@@ -84,54 +111,77 @@
     color: #000000;
 }
 
-.helper-text {
-    color: red;
-    font-size: 11px;
-    margin-top: 3px;
-    margin-left: 2px;
-}
-
 .profile-photo-container input[type="file"] {
     display: none; 
 }
 
-.profile-photo-label {
+.profile-photo-wrapper {
     display: flex;
+    width: 100%;
     justify-content: center;
     align-items: center;
-    width: 120px;
-    height: 120px;
+    margin: 15px;
+}
+
+#current-profile-photo {
+    width: 120px; 
+    height: 120px; 
     border-radius: 50%;
-    background-color: #c0c0c0; 
+}
+
+.profile-photo-label {
+    position: absolute;
+    padding: 3px 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    border: 1px solid white;
+    border-radius: 10px;
     cursor: pointer;
-    margin: 5px 0;  
-    align-self: center;  
 }
 
-.plus-icon {
-    font-size: 45px;
-    font-weight: 100;
-    color: black;
-    background-color: #c0c0c0;
-}
-
-.input-area {
+.email-area {
     width: 50%; 
     max-width: 310px;
     display: flex;
     flex-direction: column; 
 }
 
-.input-area label {
+.email-area label {
     font-family: 'Pretendard', sans-serif;
     font-size: 13px; 
-    font-weight: 600;
+    font-weight: 900;
+    margin-top: 3px; 
+    margin-bottom: 3px; 
+    color: #000000;
+}
+
+.email-area p {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 12px; 
+    font-weight: 400;
+    margin: 13px 0; 
+}
+
+.nickname-area {
+    width: 50%; 
+    max-width: 310px;
+    display: flex;
+    flex-direction: column; 
+}
+
+.nickname-area label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px; 
+    font-weight: 900;
     margin-top: 3px; 
     margin-bottom: 5px; 
     color: #000000;
 }
 
-.input-area input {
+.nickname-area input {
     width: 100%;
     padding: 5px;
     margin: 3px 0;
@@ -141,7 +191,13 @@
     color: #333;
 }
 
-.signup-button {
+.helper-text {
+    color: red;
+    font-size: 11px;
+    margin-left: 2px;
+}
+
+.edit-button {
     width: 50%;
     max-width: 310px; 
     padding: 7px;
@@ -157,18 +213,33 @@
     cursor: pointer;
 }
 
-.login-link {
+.delete-account-link {
     font-size: 12px;
     text-align: center;
     margin-top: 8px; 
     display: block; 
 }
 
-.login-link a {
+.delete-account-link a {
     color: #000000; 
     text-decoration: none;
 }
 
-.login-link a:hover {
+.delete-account a:hover {
     text-decoration: underline; 
+}
+
+.save-button {
+    width: 80px;
+    padding: 10px;
+    background-color: #aaa0e5; 
+    color: #FFFFFF; 
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 4%; 
+    display: block;
+    text-align: center;
+    cursor: pointer;
 }
