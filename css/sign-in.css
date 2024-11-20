@@ -1,4 +1,4 @@
-/* post-edit.css */
+/* sign-in.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
@@ -50,124 +50,125 @@
     cursor: pointer;
 }
 
-.profile-img {
-    position: absolute;  
-    right: calc(50% - 250px);  
-    cursor: pointer;
-    width: 36px;
-    height: 36px; 
-}
-
 .center-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 30px;
+    height: calc(100vh - 85px); 
 }
 
-.post-edit-text {
+.signup-text {
     font-family: 'Pretendard', sans-serif;
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 700;
-    line-height: 31.2px;
+    line-height: 38px;
     text-align: center;
     color: #000000;
-    margin-bottom: 30px; 
+    margin: 0 0 10px 0; 
 }
 
-.post-edit-container {
+.profile-photo-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 570px;
+    justify-content: flex-start;  
+    align-items: flex-start;  
+    width: 50%;
+    max-width: 310px;
 }
 
-.post-field {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-    width: 90%;
-    max-width: 570px;
-    margin: 3px;
-}
-
-.common-label {
+.profile-photo-container p {
     font-family: 'Pretendard', sans-serif;
-    font-size: 15px;
-    font-weight: 900;
-    margin: 7px 4px;
-}
-
-
-#title {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 900;
-    font-size: 15px;
-    width: 100%;
-    max-width: 570px;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.post-field textarea {
-    all: unset;
-    border: 1px solid #000000;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 100;
-    font-size: 14px;
-    width: 100%;
-    max-width: 570px;
-    height: 299px;
-    padding: 15px;
-    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #000000;
 }
 
 .helper-text {
     color: red;
-    font-size: 12px;
+    font-size: 11px;
     margin-top: 3px;
     margin-left: 2px;
 }
 
-.post-field input[type="file"] {
+.profile-photo-container input[type="file"] {
     display: none; 
 }
 
-.file-container {
+.profile-photo-label {
     display: flex;
-    align-items: center;  
-    gap: 10px;  
-    margin: 0 5px;
-}
-
-.file-button {
-    padding: 5px;
-    background-color: lightgray;
-    border: 1px solid #000000;
-    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #c0c0c0; 
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 400;
+    margin: 5px 0;  
+    align-self: center;  
 }
 
-.file-name {
-    font-size: 13px;
+.plus-icon {
+    font-size: 45px;
+    font-weight: 100;
+    color: black;
+    background-color: #c0c0c0;
 }
 
-.edit-button {
-    width: 80%;
-    max-width: 350px; 
-    padding: 9px;
-    background-color: rgb(136, 90, 235); 
+.input-area {
+    width: 50%; 
+    max-width: 310px;
+    display: flex;
+    flex-direction: column; 
+}
+
+.input-area label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px; 
+    font-weight: 600;
+    margin-top: 3px; 
+    margin-bottom: 5px; 
+    color: #000000;
+}
+
+.input-area input {
+    width: 100%;
+    padding: 5px;
+    margin: 3px 0;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #333;
+}
+
+.signup-button {
+    width: 50%;
+    max-width: 310px; 
+    padding: 7px;
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
     margin-top: 20px; 
+    display: block;
+    text-align: center;
     cursor: pointer;
+}
+
+.login-link {
+    font-size: 12px;
+    text-align: center;
+    margin-top: 8px; 
+    display: block; 
+}
+
+.login-link a {
+    color: #000000; 
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline; 
 }

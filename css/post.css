@@ -1,4 +1,4 @@
-/* post-detail.css */
+/* post.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
@@ -250,7 +250,7 @@
     width: 50%;
     max-width: 120px; 
     padding: 10px 0;
-    background-color: #aaa0e5; 
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 13px;
@@ -387,7 +387,7 @@
 .confirm-button {
     padding: 0 30px;
     height: 30px;
-    background-color: #aaa0e5;
+    background-color: #ACA0EB;
     border: none;
     border-radius: 8px;
     font-size: 13px;

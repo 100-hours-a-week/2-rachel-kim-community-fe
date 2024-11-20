@@ -1,4 +1,4 @@
-/* sign-up.css */
+/* make-post.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
@@ -50,125 +50,124 @@
     cursor: pointer;
 }
 
+.profile-img {
+    position: absolute;  
+    right: calc(50% - 250px);  
+    cursor: pointer;
+    width: 36px;
+    height: 36px; 
+}
+
 .center-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 85px); 
+    margin-top: 30px;
 }
 
-.signup-text {
+.post-create-text {
     font-family: 'Pretendard', sans-serif;
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 700;
-    line-height: 38px;
+    line-height: 31.2px;
     text-align: center;
     color: #000000;
-    margin: 0 0 10px 0; 
+    margin-bottom: 30px; 
 }
 
-.profile-photo-container {
+.post-create-container {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;  
-    align-items: flex-start;  
-    width: 50%;
-    max-width: 310px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 570px;
 }
 
-.profile-photo-container p {
+.post-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    width: 90%;
+    max-width: 570px;
+    margin: 3px;
+}
+
+.common-label {
     font-family: 'Pretendard', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #000000;
+    font-size: 15px;
+    font-weight: 900;
+    margin: 7px 4px;
+}
+
+
+#title {
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: 15px;
+    width: 100%;
+    max-width: 570px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.post-field textarea {
+    all: unset;
+    border: 1px solid #000000;
+    font-family: 'Pretendard', sans-serif;
+    font-weight: 100;
+    font-size: 14px;
+    width: 100%;
+    max-width: 570px;
+    height: 299px;
+    padding: 15px;
+    border-radius: 10px;
 }
 
 .helper-text {
     color: red;
-    font-size: 11px;
+    font-size: 12px;
     margin-top: 3px;
     margin-left: 2px;
 }
 
-.profile-photo-container input[type="file"] {
+.post-field input[type="file"] {
     display: none; 
 }
 
-.profile-photo-label {
+.file-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: #c0c0c0; 
-    cursor: pointer;
-    margin: 5px 0;  
-    align-self: center;  
+    align-items: center;  
+    gap: 10px;  
+    margin: 0 5px;
 }
 
-.plus-icon {
-    font-size: 45px;
-    font-weight: 100;
-    color: black;
-    background-color: #c0c0c0;
-}
-
-.input-area {
-    width: 50%; 
-    max-width: 310px;
-    display: flex;
-    flex-direction: column; 
-}
-
-.input-area label {
-    font-family: 'Pretendard', sans-serif;
-    font-size: 13px; 
-    font-weight: 600;
-    margin-top: 3px; 
-    margin-bottom: 5px; 
-    color: #000000;
-}
-
-.input-area input {
-    width: 100%;
+.file-button {
     padding: 5px;
-    margin: 3px 0;
+    background-color: lightgray;
     border: 1px solid #000000;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #333;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
 }
 
-.signup-button {
-    width: 50%;
-    max-width: 310px; 
-    padding: 7px;
-    background-color: #aaa0e5; 
+.file-name {
+    font-size: 13px;
+}
+
+.submit-button {
+    width: 80%;
+    max-width: 350px; 
+    padding: 9px;
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
     margin-top: 20px; 
-    display: block;
-    text-align: center;
     cursor: pointer;
-}
-
-.login-link {
-    font-size: 12px;
-    text-align: center;
-    margin-top: 8px; 
-    display: block; 
-}
-
-.login-link a {
-    color: #000000; 
-    text-decoration: none;
-}
-
-.login-link a:hover {
-    text-decoration: underline; 
 }

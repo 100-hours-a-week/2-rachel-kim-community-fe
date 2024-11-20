@@ -1,4 +1,4 @@
-/* post-list.css */
+/* posts.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
@@ -78,7 +78,7 @@
     width: 50%;
     max-width: 120px; 
     padding: 8px 0;
-    background-color: #aaa0e5; 
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 18px;
@@ -88,6 +88,10 @@
     display: block;
     text-align: center;
     cursor: pointer;
+}
+
+#create-post-button:hover {
+    background-color: #7F6AEE; 
 }
 
 .post-list {

@@ -1,4 +1,4 @@
-/* login.css */
+/* log-in.css */
 
 @font-face {
     font-family: 'Paperlogy-2ExtraLight';      
@@ -95,7 +95,7 @@
     width: 50%; 
     max-width: 383px; 
     padding: 10px;
-    background-color: #aaa0e5; 
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 6px;
