@@ -31,7 +31,7 @@
     border-bottom: 1px solid #000000;
 }
 
-.banner-text {
+#banner-text {
     font-family: 'Sandoll GogoRound', 'Paperlogy-2ExtraLight', sans-serif;
     font-size: 32px;
     font-weight: 400;
@@ -40,7 +40,7 @@
     position: relative;  
 }
 
-.back-arrow {
+#back-arrow {
     font-family: sans-serif;
     position: absolute;  
     left: calc(50% - 250px);  
@@ -50,7 +50,7 @@
     cursor: pointer;
 }
 
-.profile-img {
+#profile-img {
     position: absolute;  
     right: calc(50% - 250px);  
     cursor: pointer;
@@ -76,7 +76,7 @@
     max-width: 500px;
 }
 
-.title {
+#title {
     font-family: 'Pretendard', sans-serif;
     font-weight: 700;
     font-size: 24px;
@@ -105,27 +105,27 @@
     margin: 0 3px;
 }
 
-.author-photo {
+#author-photo {
     width: 36px;
     height: 36px;
     margin-right: 8px;
 }
 
-.author-name {
+#author-name {
     font-weight: 700;
     font-size: 15px;
     line-height: 19.5px;
     margin-right: 20px;
 }
 
-.post-date {
+#post-date {
     font-weight: 400;
     font-size: 14px;
     line-height: 18.2px;
     margin-right: 5px;
 }
 
-.post-time {
+#post-time {
     font-weight: 400;
     font-size: 14px;
     line-height: 18.2px;
@@ -138,7 +138,7 @@
     gap: 10px;
 }
 
-.edit-post-button {
+#edit-post-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
@@ -146,7 +146,7 @@
     border: 1px solid rgb(150, 149, 149);  
 }
 
-.delete-post-button {
+#delete-post-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
@@ -154,7 +154,7 @@
     border: 1px solid rgb(150, 149, 149);  
 }
 
-.post-separator {
+#post-separator {
     width: calc(100% + 50px); 
     margin: 10px -20px;          
     border: none;             
@@ -208,7 +208,7 @@
     background-color: #d7d5d5;
 }
 
-.comment-separator {
+#comment-separator {
     width: 100%;
     border: none;             
     border-top: 1px solid #ccc; 
@@ -227,7 +227,7 @@
     border-radius: 10px;
 }
 
-.comment-input {
+#comment-input {
     all: unset;
     font-family: 'Pretendard', sans-serif;
     font-weight: 900;
@@ -245,7 +245,7 @@
     border-top: 1px solid #ccc; 
 }
 
-.submit-comment-button {
+#submit-comment-button {
     align-self: flex-end;  
     width: 50%;
     max-width: 120px; 
@@ -320,7 +320,7 @@
     gap: 10px;
 }
 
-.edit-comment-button {
+#edit-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
@@ -328,7 +328,7 @@
     border: 1px solid rgb(150, 149, 149);  
 }
 
-.delete-comment-button {
+#delete-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
@@ -373,7 +373,7 @@
     background-color: white;
 }
 
-.cancel-button {
+#cancel-button {
     padding: 0 30px;
     height: 30px;
     background-color: black; 
@@ -384,7 +384,7 @@
     cursor: pointer;
 }
 
-.confirm-button {
+#confirm-button {
     padding: 0 30px;
     height: 30px;
     background-color: #ACA0EB;

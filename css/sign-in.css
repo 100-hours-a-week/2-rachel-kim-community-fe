@@ -31,7 +31,7 @@
     border-bottom: 1px solid #000000;
 }
 
-.banner-text {
+#banner-text {
     font-family: 'Sandoll GogoRound', 'Paperlogy-2ExtraLight', sans-serif;
     font-size: 32px;
     font-weight: 400;
@@ -40,7 +40,7 @@
     position: relative;  
 }
 
-.back-arrow {
+#back-arrow {
     font-family: sans-serif;
     position: absolute;  
     left: calc(50% - 250px);  
@@ -58,7 +58,7 @@
     height: calc(100vh - 85px); 
 }
 
-.signup-text {
+#signup-text {
     font-family: 'Pretendard', sans-serif;
     font-size: 32px;
     font-weight: 700;
@@ -95,7 +95,7 @@
     display: none; 
 }
 
-.profile-photo-label {
+#profile-photo-label {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -108,7 +108,7 @@
     align-self: center;  
 }
 
-.plus-icon {
+#plus-icon {
     font-size: 45px;
     font-weight: 100;
     color: black;
@@ -141,7 +141,7 @@
     color: #333;
 }
 
-.signup-button {
+#signup-button {
     width: 50%;
     max-width: 310px; 
     padding: 7px;
@@ -157,18 +157,18 @@
     cursor: pointer;
 }
 
-.login-link {
+#login-link {
     font-size: 12px;
     text-align: center;
     margin-top: 8px; 
     display: block; 
 }
 
-.login-link a {
+#login-link a {
     color: #000000; 
     text-decoration: none;
 }
 
-.login-link a:hover {
+#login-link a:hover {
     text-decoration: underline; 
 }
