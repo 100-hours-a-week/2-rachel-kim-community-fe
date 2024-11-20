@@ -58,6 +58,10 @@
     padding: 0 10px;
 }
 
+#dropdown-menu:hover {
+    background-color: #E9E9E9;
+}
+
 .dropdown-menu li {
     padding: 8px 15px;
     gap: 10px;
@@ -201,7 +205,7 @@
     width: 50%;
     max-width: 310px; 
     padding: 7px;
-    background-color: #aaa0e5; 
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 6px;
@@ -232,7 +236,7 @@
 .save-button {
     width: 80px;
     padding: 10px;
-    background-color: #aaa0e5; 
+    background-color: #ACA0EB; 
     color: #FFFFFF; 
     border: none;
     border-radius: 20px;
@@ -295,7 +299,7 @@
 .confirm-button {
     padding: 0 30px;
     height: 30px;
-    background-color: #aaa0e5;
+    background-color: #ACA0EB;
     border: none;
     border-radius: 8px;
     font-size: 13px;
