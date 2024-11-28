@@ -85,9 +85,10 @@
 }
 
 .helper-text {
+    display: none;
     color: red;
     font-size: 11px;
-    margin-top: 3px;
+    margin-top: 4px;
     margin-left: 2px;
 }
 
@@ -108,11 +109,18 @@
     align-self: center;  
 }
 
-#plus-icon {
+.plus-icon {
     font-size: 45px;
     font-weight: 100;
     color: black;
     background-color: #c0c0c0;
+}
+
+.profile-photo-preview {
+    width: 100%;         
+    height: 100%;        
+    border-radius: 50%;  
+    object-fit: cover;   
 }
 
 .input-area {
@@ -126,7 +134,7 @@
     font-family: 'Pretendard', sans-serif;
     font-size: 13px; 
     font-weight: 600;
-    margin-top: 3px; 
+    margin-top: 5px; 
     margin-bottom: 5px; 
     color: #000000;
 }
@@ -134,7 +142,6 @@
 .input-area input {
     width: 100%;
     padding: 5px;
-    margin: 3px 0;
     border: 1px solid #000000;
     border-radius: 4px;
     font-size: 12px;
@@ -155,6 +162,10 @@
     display: block;
     text-align: center;
     cursor: pointer;
+}
+
+#signup-button.active {
+    background-color: #7F6AEE; 
 }
 
 #login-link {

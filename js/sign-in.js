@@ -162,12 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 로그인하러 가기 링크 클릭 시
     loginLink.addEventListener('click', (event) => {
         event.preventDefault();
-        window.location.href = '/log-in';
+        window.location.href = '/login';
     });
 
     // 백 애로우 클릭 시
     backArrow.addEventListener('click', () => {
-        window.location.href = '/log-in';
+        window.location.href = '/login';
     });
 
     // 유효성 검사 상태에 따라 회원가입 버튼 활성화

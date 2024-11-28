@@ -85,10 +85,9 @@
     margin-bottom: 4px; 
 }
 
-.helper-text {
+#helper-text {
     color: red;
     font-size: 12px;
-    margin-top: 2px;
 }
 
 #login-button {
@@ -107,18 +106,19 @@
     cursor: pointer;
 }
 
-.signup-link {
+#login-button.active {
+    background-color: #7F6AEE; 
+}
+
+#sign-up-link {
     font-size: 14px;
     text-align: center;
     margin-top: 8px; 
     display: block; 
-}
-
-.signup-link a {
     color: #000000; 
     text-decoration: none;
 }
 
-.signup-link a:hover {
+#sign-up-link:hover {
     text-decoration: underline; 
 }

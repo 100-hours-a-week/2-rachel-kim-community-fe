@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     editPostButton.addEventListener('click', () => {
         // 실제 데이터 fetch 후 활성화 예정
         // const postId = postContainer.dataset.postId;
-        window.location.href = `/post/edit/${postId}`;
+        window.location.href = `/post/${postId}/edit`;
     });
 
     // 게시글 삭제 버튼 클릭 시

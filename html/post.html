@@ -65,31 +65,36 @@
                     </div>
                 </div>
                 <div class="comment-actions">
-                    <button id="edit-comment-button">수정</button>
-                    <button id="delete-comment-button">삭제</button>
+                    <button class="edit-comment-button">수정</button>
+                    <button class="delete-comment-button">삭제</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal" id="delete-post-modal">
-        <div class="modal-content">
-            <h2>게시글을 삭제하시겠습니까?</h2>
-            <p>삭제한 내용은 복구될 수 없습니다.</p>
-            <div class="modal-actions">
-                <button id="cancel-button">취소</button>
-                <button id="confirm-button">확인</button>
+    <div class="overlay">
+        <div class="modal" id="delete-post-modal">
+            <div class="modal-content">
+                <h2>게시글을 삭제하시겠습니까?</h2>
+                <p>삭제한 내용은 복구될 수 없습니다.</p>
+                <div class="modal-actions">
+                    <button class="modal-cancel-button" id="post-cancel-button">취소</button>
+                    <button class="modal-confirm-button" id="post-confirm-button">확인</button>
+                </div>
             </div>
         </div>
     </div>
-    <div class="modal" id="delete-comment-modal">
-        <div class="modal-content">
-            <h2>댓글을 삭제하시겠습니까?</h2>
-            <p>삭제한 내용은 복구될 수 없습니다.</p>
-            <div class="modal-actions">
-                <button id="cancel-button">취소</button>
-                <button id="confirm-button">확인</button>
+    <div class="overlay">
+        <div class="modal" id="delete-comment-modal">
+            <div class="modal-content">
+                <h2>댓글을 삭제하시겠습니까?</h2>
+                <p>삭제한 내용은 복구될 수 없습니다.</p>
+                <div class="modal-actions">
+                    <button class="modal-cancel-button" id="comment-cancel-button">취소</button>
+                    <button class="modal-confirm-button" id="comment-confirm-button">확인</button>
+                </div>
             </div>
         </div>
     </div>
+    <script src="/js/post.js"></script>
 </body>
 </html>

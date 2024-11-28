@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 게시글 작성 버튼 클릭 시
     createPostButton.addEventListener('click', () => {
-        window.location.href = '/post/create';
+        window.location.href = '/posts/new';
     });
 
     // 포스트 카드(개별 게시글) 클릭 시
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         post.addEventListener('click', () => {
             // 주석 처리: 실제 fetch 이후 활성화 예정
             // const postId = post.dataset.postId;
-            window.location.href = `/post/${postId}`;
+            window.location.href = `/posts/${postId}`;
         });
     });
 

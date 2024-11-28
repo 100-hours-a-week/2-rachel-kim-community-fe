@@ -262,6 +262,10 @@
     cursor: pointer;
 }
 
+#submit-comment-button.active {
+    background-color: #7F6AEE;
+}
+
 .comment-container{
     display: flex;
     justify-content: space-between; 
@@ -320,7 +324,7 @@
     gap: 10px;
 }
 
-#edit-comment-button {
+.edit-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
@@ -328,27 +332,54 @@
     border: 1px solid rgb(150, 149, 149);  
 }
 
-#delete-comment-button {
+.delete-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
     background-color: #F4F5F7;
     border: 1px solid rgb(150, 149, 149);  
+}
+
+.overlay {
+    display: none; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw; 
+    height: 100vh; 
+    background: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
+}
+
+.overlay.active {
+    display: block; 
+}
+
+body.no-scroll {
+    overflow: hidden; 
 }
 
 .modal {
-    display: none;
-    width: 50%;
-    height: 100%;
-    margin: 10px;
+    display: none; 
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 1000;
+    width: 80%;
+    max-width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.overlay.active .modal {
+    display: block; 
 }
 
 .modal-content {
-    background-color: white; 
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 300px;
+    background-color: white;
     text-align: center;
     font-family: 'Pretendard', sans-serif;
 }
@@ -373,7 +404,7 @@
     background-color: white;
 }
 
-#cancel-button {
+.modal-cancel-button {
     padding: 0 30px;
     height: 30px;
     background-color: black; 
@@ -384,7 +415,7 @@
     cursor: pointer;
 }
 
-#confirm-button {
+.modal-confirm-button {
     padding: 0 30px;
     height: 30px;
     background-color: #ACA0EB;
