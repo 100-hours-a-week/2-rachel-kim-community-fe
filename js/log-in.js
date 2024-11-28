@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 회원가입 링크 클릭 시
     signupLink.addEventListener('click', (event) => {
         event.preventDefault(); // 브라우저 페이지 이동 기본 동작 막음
-        window.location.href = '/sign-in';  // 회원가입 페이지로 이동
+        window.location.href = '/signup';  // 회원가입 페이지로 이동
     });
 
     // 이메일과 비밀번호가 유효하면 로그인 버튼 활성화
