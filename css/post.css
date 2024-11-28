@@ -324,7 +324,7 @@
     gap: 10px;
 }
 
-#edit-comment-button {
+.edit-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
@@ -332,7 +332,7 @@
     border: 1px solid rgb(150, 149, 149);  
 }
 
-#delete-comment-button {
+.delete-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
