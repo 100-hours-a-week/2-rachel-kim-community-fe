@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 제목 글자 수 제한
     postTitles.forEach(title => {
         if (title.textContent.length > 26) {
-            title.textContent = title.textContent.slice(0, 26) + '...';
+            title.textContent = title.textContent.slice(0, 26);
         }
     });
 
