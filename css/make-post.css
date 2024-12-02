@@ -126,7 +126,8 @@
     border-radius: 10px;
 }
 
-.helper-text {
+#helper-text {
+    display: none;
     color: red;
     font-size: 12px;
     margin-top: 3px;
@@ -170,4 +171,8 @@
     font-weight: 600;
     margin-top: 20px; 
     cursor: pointer;
+}
+
+#submit-button.active {
+    background-color: #7F6AEE;
 }

@@ -26,12 +26,13 @@ app.get('/posts', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'posts.html'));  // 게시글 목록 페이지
 });
 
-app.get('/posts/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'post.html'));  // 게시글 상세 페이지
-});
-
+// new와 :id 순서 중요
 app.get('/posts/new', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'make-post.html'));  // 게시글 작성 페이지
+});
+
+app.get('/posts/:id', (req, res) => {
+  res.sendFile(path.join(__dirname, 'html', 'post.html'));  // 게시글 상세 페이지
 });
 
 app.get('/posts/:id/edit', (req, res) => {

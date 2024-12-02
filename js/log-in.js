@@ -66,8 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 이메일과 비밀번호가 유효하면 로그인 버튼 활성화
     function updateLoginButtonState() {
         if (isEmailValid && isPasswordValid) {
+            loginButton.disabled = false;
             loginButton.classList.add('active');
         } else {
+            loginButton.disabled = true;
             loginButton.classList.remove('active');  
         }
     }

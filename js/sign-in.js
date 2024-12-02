@@ -173,9 +173,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 유효성 검사 상태에 따라 회원가입 버튼 활성화
     function updateSignupButtonState() {
         if (isProfilePhotoUploaded && isEmailValid && isPasswordValid && isConfirmPasswordValid && isNicknameValid) {
+            signupButton.disabled = false;
             signupButton.classList.add('active');  
         } 
         else {
+            signupButton.disabled = true;
             signupButton.classList.remove('active');  
         }
     }
