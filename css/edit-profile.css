@@ -53,7 +53,7 @@
 }
 
 .dropdown-menu {
-    /*display: none;*/
+    display: none;
     position: absolute;  
     right: calc(50% - 250px);  
     bottom: calc(50% - 135px);
@@ -62,8 +62,8 @@
     padding: 0 10px;
 }
 
-#dropdown-menu:hover {
-    background-color: #E9E9E9;
+.dropdown-menu.show {
+    display: block; 
 }
 
 .dropdown-menu li {
@@ -74,11 +74,16 @@
 }
 
 .dropdown-menu a {
+    padding: 5px 10px;
     text-decoration: none;
     color: black;
     font-family: 'Pretendard', sans-serif;
     font-size: 14px;
     background-color: #ccc;
+}
+
+.dropdown-menu a:hover {
+    background-color: #E9E9E9;
 }
 
 .center-container {
@@ -106,6 +111,7 @@
     align-items: flex-start;  
     width: 50%;
     max-width: 310px;
+    position: relative;
 }
 
 .profile-photo-container p {
@@ -119,22 +125,28 @@
     display: none; 
 }
 
-.profile-photo-wrapper {
+#current-profile-photo {   
     display: flex;
-    width: 100%;
     justify-content: center;
     align-items: center;
-    margin: 15px;
-}
-
-#current-profile-photo {
-    width: 120px; 
-    height: 120px; 
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
+    background-color: #c0c0c0; 
+    cursor: pointer;
+    margin: 5px 0;  
+    align-self: center; 
+    object-fit: cover;   
 }
 
-#profile-photo-label {
-    position: absolute;
+.profile-photo-preview {
+    width: 100%;         
+    height: 100%;        
+    border-radius: 50%;  
+    object-fit: cover;   
+}
+
+#change-button {
     padding: 3px 8px;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
@@ -144,6 +156,10 @@
     border: 1px solid white;
     border-radius: 10px;
     cursor: pointer;
+    position: absolute;
+    top: 55%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
 }
 
 .email-area {
@@ -195,7 +211,8 @@
     color: #333;
 }
 
-.helper-text {
+#helper-text {
+    display: none;
     color: red;
     font-size: 11px;
     margin-left: 2px;
@@ -217,19 +234,40 @@
     cursor: pointer;
 }
 
-.delete-account-link {
+#toast {
+    display: none; 
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 1000;
+    width: 80%;
+    max-width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    color: black;
+    text-align: center;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+#toast.show {
+    display: block;
+}
+
+#delete-account-link {
     font-size: 12px;
     text-align: center;
     margin-top: 8px; 
     display: block; 
-}
-
-.delete-account-link a {
     color: #000000; 
     text-decoration: none;
 }
 
-.delete-account a:hover {
+#delete-account:hover {
     text-decoration: underline; 
 }
 
@@ -248,19 +286,46 @@
     cursor: pointer;
 }
 
+.overlay {
+    display: none; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw; 
+    height: 100vh; 
+    background: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
+}
+
+.overlay.active {
+    display: block; 
+}
+
+body.no-scroll {
+    overflow: hidden; 
+}
+
 .modal {
-    display: none;
-    width: 50%;
-    height: 100%;
-    margin: 10px;
+    display: none; 
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 1000;
+    width: 80%;
+    max-width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.overlay.active .modal {
+    display: block; 
 }
 
 .modal-content {
-    background-color: white; 
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 300px;
+    background-color: white;
     text-align: center;
     font-family: 'Pretendard', sans-serif;
 }

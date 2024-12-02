@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const backArrow = document.getElementById('back-arrow');
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
-    const helperText = document.getElementById('helper-text');
     const fileInput = document.getElementById('image'); 
     const fileNameElement = document.getElementById('file-name');
     const submitButton = document.getElementById('submit-button');
+    const helperText = document.getElementById('helper-text');
 
     // 백애로우 클릭 시
     backArrow.addEventListener('click', () => {
