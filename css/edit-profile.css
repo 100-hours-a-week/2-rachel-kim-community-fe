@@ -242,12 +242,12 @@
     transform: translate(-50%, -50%); 
     z-index: 1000;
     width: 80%;
-    max-width: 300px;
-    background-color: white;
+    max-width: 200px;
+    background-color: plum;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    color: black;
+    box-shadow: 0 4px 6px rgba(133, 183, 229, 0.1);
+    padding: 25px;
+    color: white;
     text-align: center;
     font-family: 'Pretendard', sans-serif;
     font-size: 18px;

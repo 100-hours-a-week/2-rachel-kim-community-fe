@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/signup';  // 회원가입 페이지로 이동
     });
 
-    // 이메일과 비밀번호가 유효하면 로그인 버튼 활성화
+    // 유효성 검사 상태에 따라 로그인 버튼 활성화
     function updateLoginButtonState() {
         if (isEmailValid && isPasswordValid) {
             loginButton.disabled = false;
