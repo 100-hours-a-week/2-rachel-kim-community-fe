@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!title || !content) {
             helperText.style.display = 'block';
-            // 질문티비
+            // 질문 - 버튼 클릭하면서 helpertext가 나타나면 결국 업로드 되는 것 아닌가?
             helperText.textContent = '*제목, 내용을 모두 작성해주세요.';
             return;
         } else {

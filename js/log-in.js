@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 회원가입 링크 클릭 시
     signupLink.addEventListener('click', (event) => {
         event.preventDefault(); // 브라우저 페이지 이동 기본 동작 막음
-        window.location.href = '/signup';  // 회원가입 페이지로 이동
+        window.location.href = '/users/new';  // 회원가입 페이지로 이동
     });
 
     // 유효성 검사 상태에 따라 로그인 버튼 활성화

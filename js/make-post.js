@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // fetch('/api/posts', {
     });
 
-    // 유효성 검사 상태
+    // 유효성 검사 상태 (실질적 유효성, 복잡성 감소)
     function isFormValid() {
         const title = titleInput.value.trim();
         const content = contentInput.value.trim();
@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
             submitButton.disabled = false; 
             submitButton.classList.add('active');
         } else {
-            // 질문티비// submitButton.disabled = true;
+            // 질문 - 여기서는 버튼 비활성화 시키면 helpertext 작동이 안됨
+            // submitButton.disabled = true;
             submitButton.classList.remove('active');
         }
     }

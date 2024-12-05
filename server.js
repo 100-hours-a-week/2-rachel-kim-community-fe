@@ -14,11 +14,11 @@ app.get('/', (req, res) => {
   res.redirect('/login');  // 기본적으로 로그인 페이지로 리다이렉트
 });
 
-app.get('/login', (req, res) => {
+app.get('/sessions/new', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'log-in.html'));  // 로그인 페이지
 });
 
-app.get('/signup', (req, res) => {
+app.get('/users/new', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'sign-in.html'));  // 회원가입 페이지
 });
 
@@ -26,7 +26,7 @@ app.get('/posts', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'posts.html'));  // 게시글 목록 페이지
 });
 
-// new와 :id 순서 중요
+// new와 :id 순서 중요 (충돌 가능성)
 app.get('/posts/new', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'make-post.html'));  // 게시글 작성 페이지
 });

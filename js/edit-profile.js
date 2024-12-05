@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (target.id === 'password-link') {
                 window.location.href = '/users/{postId}/password';  // 비밀번호수정 페이지로 이동
             } else if (target.id === 'logout-link') {
-                window.location.href = '/login';  // 로그아웃 페이지로 이동
+                window.location.href = '/sessions/new';  // 로그아웃 페이지로 이동
             }
         }
     });
