@@ -14,11 +14,11 @@ app.get('/', (req, res) => {
   res.redirect('/login');  // 기본적으로 로그인 페이지로 리다이렉트
 });
 
-app.get('/sessions/new', (req, res) => {
+app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'log-in.html'));  // 로그인 페이지
 });
 
-app.get('/users/new', (req, res) => {
+app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'html', 'sign-in.html'));  // 회원가입 페이지
 });
 

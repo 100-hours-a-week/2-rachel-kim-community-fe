@@ -16,18 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         
         if (!email) {
-            helperText.style.display = 'block'; 
             helperText.textContent = '*이메일을 입력해주세요.';
+            helperText.style.display = 'block';
             isEmailValid = false;
         } else if (!emailRegex.test(email)) {
-            helperText.style.display = 'block'; 
             helperText.textContent = '*올바른 이메일 주소 형식을 입력해주세요. (예: example@example.com)';
+            helperText.style.display = 'block'; 
             isEmailValid = false;
         } else {
             helperText.textContent = '';
+            helperText.style.display = 'none'; 
             isEmailValid = true;
         }
-        
         updateLoginButtonState();
     });
 
@@ -37,37 +37,67 @@ document.addEventListener('DOMContentLoaded', () => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/;
         
         if (!password) {
-            helperText.style.display = 'block'; 
             helperText.textContent = '* 비밀번호를 입력해주세요.';
+            helperText.style.display = 'block'; 
             isPasswordValid = false;
         } else if (!passwordRegex.test(password)) {
-            helperText.style.display = 'block'; 
             helperText.textContent = '* 비밀번호는 8자 이상, 20자 이하이며, 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.';
+            helperText.style.display = 'block'; 
             isPasswordValid = false;
         } else {
             helperText.textContent = '';
+            helperText.style.display = 'none'; 
             isPasswordValid = true;
         }
-        
         updateLoginButtonState();
     });
 
     // 로그인 버튼 클릭 시 동작
     loginButton.addEventListener('click', (event) => {
-        event.preventDefault();  // 폼 제출 방지
+        event.preventDefault();  
 
-        // 여기에 fetch 요청을 추가할 수 있는 자리입니다.
-        // 예시:
-        // fetch('/api/login', { ... })
+        // 이메일과 비밀번호 서버로 보내기
+        if (isEmailValid && isPasswordValid) {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+        
+            fetch('/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`서버 에러 발생: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.token) {
+                        // 로그인 성공 시 
+                        localStorage.setItem('authToken', data.token);
+                        window.location.href = '/posts';
+                    } else {
+                        // 로그인 실패 시 
+                        helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';
+                        helperText.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('로그인 오류:', error);
+                })
+        }
     });
 
     // 회원가입 링크 클릭 시
     signupLink.addEventListener('click', (event) => {
-        event.preventDefault(); // 브라우저 페이지 이동 기본 동작 막음
-        window.location.href = '/users/new';  // 회원가입 페이지로 이동
+        event.preventDefault(); 
+        window.location.href = '/signup';  
     });
 
-    // 유효성 검사 상태에 따라 로그인 버튼 활성화
+    // 로그인 버튼 활성화
     function updateLoginButtonState() {
         if (isEmailValid && isPasswordValid) {
             loginButton.disabled = false;
