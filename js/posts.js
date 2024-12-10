@@ -8,32 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/posts/new';
     });
 
-    // 좋이요 수, 댓글 수, 조회 수 표기
-    const updateCount = (element, label, count) => {
-        let formattedCount;
-
-        if (count >= 100000) {
-            formattedCount = (count / 1000).toFixed(0) + 'k';
-        } else if (count >= 10000) {
-            formattedCount = (count / 1000).toFixed(0) + 'k';
-        } else if (count >= 1000) {
-            formattedCount = (count / 1000).toFixed(1) + 'k';
-        } else {
-            formattedCount
-        }
-        element.textContent = `${label} ${formattedCount}`;
-    }
-
-    // 서버에서 게시글 데이터 가져오기
+    // 서버와 통신하여 게시글 목록 조회
     fetch('/api/posts', {
         method: 'GET',
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`서버 에러 발생: ${response.status}`);
-            }
-            return response.json();
-        })
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
         .then(data => {
             // 받은 데이터로 게시글 목록 동적 생성
             const postList = document.getElementById('post-list'); 
@@ -116,5 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('게시글 목록 조회 실패:', error);
         });
+
+    // 좋이요 수, 댓글 수, 조회 수 표기
+    const updateCount = (element, label, count) => {
+        let formattedCount;
+
+        if (count >= 100000) {
+            formattedCount = (count / 1000).toFixed(0) + 'k';
+        } else if (count >= 10000) {
+            formattedCount = (count / 1000).toFixed(0) + 'k';
+        } else if (count >= 1000) {
+            formattedCount = (count / 1000).toFixed(1) + 'k';
+        } else {
+            formattedCount
+        }
+        element.textContent = `${label} ${formattedCount}`;
+    }
 });
 

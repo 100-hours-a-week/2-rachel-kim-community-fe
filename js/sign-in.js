@@ -70,12 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`/api/users/email/check?email=${encodeURIComponent(email)}`, {
                 method: 'GET',
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`서버 에러 발생: ${response.status}`);
-                    }
-                    return response.json();
-                })
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                 .then(data => {
                     if (data.exists) {
                         isEmailValid = false; 
@@ -146,12 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`, {
                 method: 'GET',
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`서버 에러 발생: ${response.status}`);
-                    }
-                    return response.json();
-                })
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                 .then(data => {
                     if(data.exists) {
                         isNicknameValid = false;
@@ -174,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         if (isProfilePhotoUploaded && isEmailValid && isPasswordValid && isConfirmPasswordValid && isNicknameValid) {
-            // 회원가입 데이터를 서버로 전송
+            // 서버와 통신하여 회원가입(프로필 사진, 이메일, 비밀번호, 닉네임) 
             const formData = new FormData();
             formData.append('profile_photo', profilePhotoInput.files[0]);
             formData.append('email', emailInput.value.trim());
@@ -185,12 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST', 
                 body: formData 
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`서버 에러 발생: ${response.status}`);
-                    }
-                    return response.json();
-                })
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                 .then(data => {
                     if (data.success) {
                         window.location.href = '/login';

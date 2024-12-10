@@ -42,9 +42,23 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // 게시글 제출 (fetch로 실제 API 요청 필요)
-        // 예시:
-        // fetch('/api/posts', {
+        // 서버와 통신하여 게시글 추가 
+        const formData = new FormData();
+        formData.append('title', titleInput.value.trim());
+        formData.append('content', contentInput.value.trim());
+        if (file) {
+            formData.append('image', fileInput.files[0]);
+        }
+
+        fetch('/api/posts', {
+            method: 'POST',
+            body: formData, 
+        })
+            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+            .then(() => {
+                window.location.href = '/posts';
+            })
+            .catch(error => console.error('게시글 작성 실패:', error.message));
     });
 
     // 유효성 검사 상태 (실질적 유효성, 복잡성 감소)

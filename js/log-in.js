@@ -56,24 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
     loginButton.addEventListener('click', (event) => {
         event.preventDefault();  
 
-        // 이메일과 비밀번호 서버로 보내기
+        // 서버와 통신하여 로그인(이메일, 비밀번호)
         if (isEmailValid && isPasswordValid) {
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
         
             fetch('/api/users/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, password })
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`서버 에러 발생: ${response.status}`);
-                    }
-                    return response.json();
-                })
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                 .then(data => {
                     if (data.token) {
                         // 로그인 성공 시 
