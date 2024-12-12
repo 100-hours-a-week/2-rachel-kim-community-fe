@@ -9,11 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileNameElement = document.getElementById('file-name');
     const editButton = document.getElementById('edit-button');
 
+    const postId = window.location.pathname.split('/')[2];
+
     // 백애로우 클릭 시
     backArrow.addEventListener('click', () => {
-        // 실제 데이터 fetch 후 활성화 예정
-        // const postId = postContainer.dataset.postId;
-        window.location.href = '/posts/{postId}'
+        window.location.href = `/posts/${postId}`
+    });
+
+    // 서버와 통신하여 기존 게시글 상세 조회
+    fetch(`/api/posts/${postId}`, {
+        method: 'GET'
+    })
+    .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+    .then(data => {
+        titleInput.value = data.title;
+        contentInput.value = data.content;
+        fileNameElement.textContent = data.imageUrl ? data.imageUrl.split('/').pop() : '파일을 선택해주세요.';
+    })
+    .catch(error => {
+        console.error('게시글 데이터 로드 오류:', error);
     });
 
     // 제목 입력 시 
@@ -24,21 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 내용 입력 시 
-    contentInput.addEventListener('input', () => {
-        
-    });
-
     // 파일 선택 시
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0]; 
         fileNameElement.textContent = file ? file.name : '파일을 선택해주세요.';
     });
-
-    // 페이지 로드 시, 기존 게시글 데이터 가져오기
-    // 제목과 내용은 서버에서 fetch로 받아와야 함
-    // 예시:
-    // fetch('/api/posts/{postId}')
 
     // 수정하기 버튼 클릭 시
     editButton.addEventListener('click', () => {
@@ -54,9 +58,24 @@ document.addEventListener('DOMContentLoaded', () => {
             helperText.textContent = '';
         }
 
-        // 게시글 수정 제출 (fetch로 실제 API 요청 필요)
-        // 예시:
-        // fetch('/api/posts', {
-    });
+        // 서버와 통신하여 게시글 수정
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
+        if (fileInput.files[0]) {
+            formData.append('image', fileInput.files[0]);
+        }
 
+        fetch(`/api/posts/${postId}`, {
+            method: 'PATCH', 
+            body: formData, 
+        })
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(() => {
+            window.location.href = `/posts/${postId}`;
+        })
+        .catch(error => {
+            console.error('게시글 수정 실패:', error.message);
+        });
+    });
 });

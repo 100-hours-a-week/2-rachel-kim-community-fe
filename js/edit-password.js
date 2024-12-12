@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const editButton = document.getElementById("edit-button");
     const toast = document.getElementById('toast');
 
+    const userId = getLoggedInUserId();  
+
     let isPasswordValid = false;
     let isConfirmPasswordValid = false;
 
@@ -48,12 +50,41 @@ document.addEventListener("DOMContentLoaded", () => {
     editButton.addEventListener("click", (event) => {
         event.preventDefault(); 
 
-        // 비밀번호 변경 요청 처리
-        //fetch('/api/update-password', {
+        // 서버와 통신하여 비밀번호 변경
+        const password = passwordInput.value.trim();
 
-        // 성공 가정
-        showToast("수정 완료!");
+        fetch(`/api/users/${userId}/password`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 헤더
+            },
+            body: JSON.stringify({password})
+        })
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(() => {
+            showToast('수정 완료!');
+        })
+        .catch((error) => console.error('비밀번호 수정 실패:', error));
     });
+
+    function decodeJWT(token) {
+        // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const decoded = JSON.parse(window.atob(base64));
+        return decoded;
+    }
+
+    // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
+    function getLoggedInUserId() {
+        const token = localStorage.getItem('authToken'); 
+        if (token) {
+            const decodedToken = decodeJWT(token);  
+            return decodedToken.userId; 
+        }
+        return null;  
+    }
 
     // 유효성 검사 상태에 따라 수정 버튼 활성화 
     function updateEditButtonState() {

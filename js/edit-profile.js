@@ -16,14 +16,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailArea = document.querySelector('.email-area p');
     const toast = document.getElementById('toast');
 
-    // 이메일 기본값 설정 (이미 이메일이 있을 경우, 해당 이메일을 설정)
-    // 이 이메일은 서버에서 가져온 현재 사용자의 이메일이어야 합니다.
-    // 예시: fetch('/api/get-email')
-    //emailArea.textContent = 'startupcode@gmail.com'; 
+    
+    const userId = getLoggedInUserId();  
 
-    // 프로필 이미지 초기 설정
-    // 서버에서 이미지를 가져와서 초기 프로필 사진을 설정해야 함
-    // 예시: fetch('/api/get-profile-image')
+    // 서버와 통신하여 유저 정보 조회 (이메일, 프로필 사진, 닉네임)
+    fetch(`/api/users/${userId}`)
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then((data) => {
+            if (data.email) {
+                emailArea.textContent = data.email; 
+            }
+            if (data.profileImageUrl) {
+                currentProfilePhoto.src = data.profileImageUrl; 
+            }
+            if (data.nickname) {
+                nicknameInput.value = data.nickname; 
+            }
+        })
+        .catch((error) => console.error('유저 정보 조회 실패:', error));
 
     // 프로필 이미지 클릭 시
     profileImg.addEventListener('click', () => {
@@ -35,23 +45,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = event.target;
         if (target.tagName === 'A') {
             event.preventDefault(); 
-
-            // 실제 데이터 fetch 후 활성화 예정
-            // const postId = postContainer.dataset.postId;
     
             if (target.id === 'profile-link') {
-                window.location.href = '/users/{postId}/profile';  
+                window.location.href = `/users/${userId}/profile`;  
             } else if (target.id === 'password-link') {
-                window.location.href = '/users/{postId}/password';  // 비밀번호수정 페이지로 이동
+                window.location.href = `/users/${userId}/password`;  
             } else if (target.id === 'logout-link') {
-                window.location.href = '/sessions/new';  // 로그아웃 페이지로 이동
+                window.location.href = '/login';  
             }
         }
     });
 
     let originalProfilePhotoSrc = currentProfilePhoto.src; 
 
-    // 프로필 사진 변경
+    // 프로필 사진 변경 클릭 시
     profilePhotoInput.addEventListener('change', (event) => {    
         if (event.target.files.length > 0) {
             // 프로필 사진이 업로드 된 경우
@@ -72,14 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 닉네임 입력 시
-    nicknameInput.addEventListener('input', () => {
-
-    });
-
     // 수정하기 버튼 클릭 시
     editButton.addEventListener('click', () => {
         const nickname = nicknameInput.value.trim();
+        const profilePhotoFile = profilePhotoInput.files[0];
         
         // 닉네임 유효성 검사
         if (!nickname) {
@@ -91,14 +94,18 @@ document.addEventListener('DOMContentLoaded', () => {
             helperText.style.display = 'block';
             return;
         } else {
-            // 닉네임 중복 체크 (fetch 필요)
-            // 예시:
-            // fetch('/api/check-nickname', {}
-            //helperText.textContent = '*중복된 닉네임입니다.';
-            //helperText.style.display = 'block';
-
-            helperText.textContent = '';
-            showToast('수정 완료!');
+            // 서버와 통신하여 닉네임 중복 체크
+            fetch(`/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`)
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+                .then((data) => {
+                    if (data.exists) {
+                        helperText.textContent = '*중복된 닉네임입니다.';
+                        helperText.style.display = 'block';
+                    } else {
+                        helperText.textContent = '';
+                    }
+                })
+                .catch((error) => console.error('닉네임 중복 체크 실패:', error));
         }
     });
 
@@ -120,19 +127,63 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 모달 확인 버튼 클릭 시
     confirmButton.addEventListener('click', () => {
-        // 회원 탈퇴 API 호출 (fetch 필요)
-        // 예시:
-        // fetch('/api/delete-account', { method: 'DELETE' })
-
-        window.location.href = '/login';
+        // 서버와 통신하여 회원정보 삭제
+        fetch(`/api/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 토큰 인증 헤더 (필요시)
+            },
+        })
+        .then(response => response.ok ? window.location.href = '/login' : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .catch((error) => {
+            console.error('회원 탈퇴 실패:', error);
+        });
     });
 
     // 수정 완료 버튼 클릭 시
     saveButton.addEventListener('click', () => {
-        // 프로필 사진, 닉네임, 이메일 등 수정 완료 후 처리 (fetch 필요)
-        // 예시:
-        // fetch('/api/update-profile', {
+        const nickname = nicknameInput.value.trim();
+        const profilePhotoFile = profilePhotoInput.files[0]; // 선택된 프로필 사진 파일
+
+        // 서버와 통신하여 회원정보 수정
+        const formData = new FormData();
+        formData.append('nickname', nickname);
+        if (profilePhotoFile) {
+            formData.append('profilePhoto', profilePhotoFile);
+        }
+
+        fetch(`/api/users/${userId}`, {
+            method: 'PATCH',
+            body: formData,
+        })
+            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+            .then((data) => {
+                showToast('수정 완료!');
+                if (data.profileImageUrl) {
+                    // 새 프로필 사진 업로드
+                    currentProfilePhoto.src = data.profileImageUrl;
+                }
+            })
+            .catch((error) => console.error('회원정보 수정 실패:', error));
     });
+
+    function decodeJWT(token) {
+        // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const decoded = JSON.parse(window.atob(base64));
+        return decoded;
+    }
+
+    // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
+    function getLoggedInUserId() {
+        const token = localStorage.getItem('authToken'); 
+        if (token) {
+            const decodedToken = decodeJWT(token);  
+            return decodedToken.userId; 
+        }
+        return null;  
+    }
 
     // 토스트 메시지
     function showToast(message) {
@@ -143,5 +194,4 @@ document.addEventListener('DOMContentLoaded', () => {
             toast.classList.remove('show');
         }, 1000); 
     }
-
 });
