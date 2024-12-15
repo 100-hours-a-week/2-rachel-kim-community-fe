@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 수정하기 버튼 클릭 시
     editButton.addEventListener('click', () => {
         const nickname = nicknameInput.value.trim();
-        const profilePhotoFile = profilePhotoInput.files[0];
         
         // 닉네임 유효성 검사
         if (!nickname) {
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`/api/users/${userId}`, {
             method: 'DELETE',
             headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 토큰 인증 헤더 (필요시)
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             },
         })
         .then(response => response.ok ? window.location.href = '/login' : Promise.reject(`서버 에러 발생: ${response.status}`))

@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 헤더
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, 
             },
             body: JSON.stringify({password})
         })
