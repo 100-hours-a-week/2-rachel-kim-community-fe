@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-button');
     const signupLink = document.getElementById('sign-up-link');
     const helperText = document.getElementById('helper-text');
+    const BACKEND_URL = 'http://localhost:4000';
 
     let isEmailValid = false;
     let isPasswordValid = false;
@@ -61,26 +62,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
         
-            fetch('/api/users/login', {
+            fetch(`${BACKEND_URL}/api/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, password })
             })
-                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-                .then(data => {
-                    if (data.token) {
-                        // 로그인 성공 시 
-                        localStorage.setItem('authToken', data.token);
-                        window.location.href = '/posts';
-                    } else {
-                        // 로그인 실패 시 
-                        helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';
-                        helperText.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('로그인 오류:', error);
-                })
+            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+            .then(data => {
+                if (data.data && data.data.auth_token) {
+                    // 로그인 성공 시 
+                    localStorage.setItem('authToken', data.data.auth_token);
+                    window.location.href = '/posts';
+                } else {
+                    // 로그인 실패 시 
+                    helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';
+                    helperText.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('로그인 오류:', error);
+            })
         }
     });
 
