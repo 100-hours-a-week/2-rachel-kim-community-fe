@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmPasswordInput = document.getElementById("confirm-password");
     const editButton = document.getElementById("edit-button");
     const toast = document.getElementById('toast');
-
     const userId = getLoggedInUserId();  
 
     let isPasswordValid = false;

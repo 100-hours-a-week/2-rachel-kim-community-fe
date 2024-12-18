@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupButton = document.getElementById('signup-button');
     const loginLink = document.getElementById('login-link');
     const backArrow = document.getElementById('back-arrow');
+    //const BACKEND_URL = 'http://localhost:4000';
+    const BACKEND_URL = 'http://3.39.23.86:4000';
     
     let isProfilePhotoUploaded = false;
     let isEmailValid = false;
@@ -67,22 +69,28 @@ document.addEventListener('DOMContentLoaded', () => {
             isEmailValid = false;
         } else {
             // 서버와 통신하여 이메일 중복 체크
-            fetch(`/api/users/email/check?email=${encodeURIComponent(email)}`, {
+            fetch(`${BACKEND_URL}/api/users/email/check?email=${encodeURIComponent(email)}`, {
                 method: 'GET',
             })
-                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-                .then(data => {
-                    if (data.exists) {
-                        isEmailValid = false; 
+                .then(response => {
+                    if (response.status === 409) {
+                        // 중복된 이메일 처리
+                        isEmailValid = false;
                         setHelperText(emailInput, '*중복된 이메일입니다.');
-                    } else {
+                        return;
+                    } else if (response.status === 200) {
+                        // 사용 가능한 이메일 처리
                         isEmailValid = true;
                         clearHelperText(emailInput);
+                        return;
+                    } else {
+                        return Promise.reject(`서버 에러 발생: ${response.status}`);
                     }
-                    updateSignupButtonState();
                 })
                 .catch(error => {
-                    console.error('이메일 중복 체크 실패:' ,error);
+                    console.error('이메일 중복 체크 실패:', error);
+                })
+                .finally(() => {
                     updateSignupButtonState();
                 });
         }
@@ -138,22 +146,26 @@ document.addEventListener('DOMContentLoaded', () => {
             isNicknameValid = false;
         } else {
             // 서버와 통신하여 닉네임 중복 체크
-            fetch(`/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`, {
+            fetch(`${BACKEND_URL}/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`, {
                 method: 'GET',
             })
-                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-                .then(data => {
-                    if(data.exists) {
+                .then(response => {
+                    if (response.status === 409) {
                         isNicknameValid = false;
                         setHelperText(nicknameInput, '*중복된 닉네임입니다.');
-                    } else {
-                        isNicknameValid = true; 
+                        return;
+                    } else if (response.status === 200) {
+                        isNicknameValid = true;
                         clearHelperText(nicknameInput);
+                        return;
+                    } else {
+                        return Promise.reject(`서버 에러 발생: ${response.status}`);
                     }
-                    updateSignupButtonState();
                 })
                 .catch(error => {
                     console.error('닉네임 중복 체크 실패:', error);
+                })
+                .finally(() => {
                     updateSignupButtonState();
                 });
         }
@@ -171,18 +183,25 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('password', passwordInput.value);
             formData.append('nickname', nicknameInput.value.trim());
             
-            fetch('/api/users/signup', {
+            fetch(`${BACKEND_URL}/api/users/signup`, {
                 method: 'POST', 
                 body: formData 
             })
-                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+                .then(response => {
+                    if (response.status === 201) {
+                        // 회원가입 성공
+                        window.location.href = '/login'; 
+                    }
+                    // 에러 메시지 처리
+                    return response.json();
+                })
                 .then(data => {
-                    if (data.success) {
-                        window.location.href = '/login';
+                    if (data && data.message) {
+                        console.error('회원가입 실패:', data.message);
                     }
                 })
                 .catch(error => {
-                    console.error('회원가입 실패', error);
+                    console.error('회원가입 요청 실패:', error);
                 });
         }
     });

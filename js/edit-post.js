@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('image'); 
     const fileNameElement = document.getElementById('file-name');
     const editButton = document.getElementById('edit-button');
-
     const postId = window.location.pathname.split('/')[2];
 
     // 백애로우 클릭 시

@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-button');
     const signupLink = document.getElementById('sign-up-link');
     const helperText = document.getElementById('helper-text');
-    const BACKEND_URL = 'http://localhost:4000';
+    //const BACKEND_URL = 'http://localhost:4000';
+    const BACKEND_URL = 'http://3.39.23.86:4000';
 
     let isEmailValid = false;
     let isPasswordValid = false;

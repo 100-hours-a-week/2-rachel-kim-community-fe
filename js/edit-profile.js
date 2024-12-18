@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentProfilePhoto = document.getElementById('current-profile-photo');
     const emailArea = document.querySelector('.email-area p');
     const toast = document.getElementById('toast');
-
-    
     const userId = getLoggedInUserId();  
 
     // 서버와 통신하여 유저 정보 조회 (이메일, 프로필 사진, 닉네임)

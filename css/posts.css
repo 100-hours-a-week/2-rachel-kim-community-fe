@@ -75,7 +75,7 @@
 
 #create-post-button {
     align-self: flex-end;  
-    width: 50%;
+    width: 80%;
     max-width: 120px; 
     padding: 8px 0;
     background-color: #ACA0EB; 
@@ -94,7 +94,7 @@
     background-color: #7F6AEE; 
 }
 
-.post-list {
+#post-list {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -107,7 +107,7 @@
     width: 100%;
     max-width: 592px;
     padding: 15px 20px;
-    margin: 0 90px;
+    margin: 10px 90px;
     gap: 8px;
     box-shadow: 3px 4px 4px 0px #CCCCCC40;
     border-radius: 15px;
