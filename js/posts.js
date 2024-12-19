@@ -2,8 +2,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const createPostButton = document.getElementById('create-post-button');
-    //const BACKEND_URL = 'http://localhost:4000';
-    const BACKEND_URL = 'http://3.39.23.86:4000';
 
     // 게시글 작성 버튼 클릭 시
     createPostButton.addEventListener('click', () => {

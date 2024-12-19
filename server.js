@@ -9,6 +9,7 @@ const PORT = 3000;
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js'))); 
+app.use(express.static(__dirname));
 
 // HTML 파일을 제공하는 경로 설정
 app.get('/', (req, res) => {

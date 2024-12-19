@@ -13,9 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const commentCancelButton = document.getElementById('comment-cancel-button');
     const urlSegments = window.location.pathname.split('/');
     const postId = urlSegments[urlSegments.length - 1];
-    const currentUserId = getLoggedInUserId();  
-    //const BACKEND_URL = 'http://localhost:4000';
-    const BACKEND_URL = 'http://3.39.23.86:4000';
+    const currentUserId = getLoggedInUserId(); 
 
     // 백애로우 클릭 시
     backArrow.addEventListener('click', () => {
@@ -41,7 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
     postConfirmButton.addEventListener('click', () => {
         // 서버와 통신하여 게시글 삭제 
         fetch(`${BACKEND_URL}/api/posts/${postId}`, { 
-            method: 'DELETE' 
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, 
+            } 
         })
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then(() => {
@@ -55,7 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 서버와 통신하여 게시글 상세 조회
     fetch(`${BACKEND_URL}/api/posts/${postId}`, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        }
     })
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
         .then(responseData => {
@@ -63,19 +67,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 게시글 제목, 본문, 작성자, 게시일 등을 HTML 요소에 반영
             const title = document.getElementById('title');
-            const postContent = document.querySelector('.post-content p');
-            const postImage = document.querySelector('.post-image img');
+            const authorPhoto = document.getElementById('author-photo')
             const authorName = document.getElementById('author-name');
             const postDate = document.getElementById('post-date');
             const postTime = document.getElementById('post-time');
-            
+            const postContent = document.querySelector('.post-content p');
+            const postImage = document.querySelector('.post-image img');
+
             // 게시글 데이터 업데이트
             title.textContent = post.post_title;
-            postContent.textContent = post.post_content;
-            postImage.src = `${BACKEND_URL}${post.profile_image_path}`;  // 이거 왜 응답에 없지?
+            authorPhoto.src = `${BACKEND_URL}${post.profile_image_path}`; 
             authorName.textContent = post.nickname; 
             postDate.textContent = new Date(post.created_at).toLocaleDateString(); 
             postTime.textContent = new Date(post.created_at).toLocaleTimeString(); 
+            postContent.textContent = post.post_content;
+            postImage.src = `${BACKEND_URL}${post.post_image_path}`; 
+
+            // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
+            if (post.user_id !== currentUserId) {
+                editPostButton.style.display = 'none';
+                deletePostButton.style.display = 'none';
+            }
 
             // 좋아요수, 조회 수, 댓글 수 업데이트
             const likeCount = document.getElementById('like-count');
@@ -91,14 +103,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchComments = () => {
         commentContainer.innerHTML = ''; 
         fetch(`${BACKEND_URL}/api/posts/${postId}/comments`, {
-                method: 'GET'
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
         })
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then(responseData => {
                 const comments = responseData.data;
+                console.log("서버에서 가져온 댓글 데이터:", comments);
                 commentContainer.innerHTML = '';
-
+                
                 comments.forEach(comment => {
+                    console.log("댓글의 user_id:", comment.user_id);
+
                     const commentElement = document.createElement('div');
                     commentElement.classList.add('comment-container');
                     commentElement.dataset.commentId = comment.comment_id;
@@ -106,10 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const commentBody = document.createElement('div');
                     commentBody.classList.add('comment-body');
 
+                    const commentMetaContent = document.createElement('div');
+                    commentMetaContent.classList.add('comment-meta-content');
+
                     const commentMeta = document.createElement('div');
                     commentMeta.classList.add('comment-meta');
                     const commentAuthorPhoto = document.createElement('img');
-                    commentAuthorPhoto.src = `${BACKEND_URL}${comment.profile_image_path}`;   // 이거 응답에 없음
+                    commentAuthorPhoto.src = `${BACKEND_URL}${comment.profile_image_path}`;   
                     commentAuthorPhoto.alt = '댓글 작성자 이미지';
                     commentAuthorPhoto.classList.add('comment-author-photo');
                     const commentAuthorName = document.createElement('span');
@@ -133,6 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     commentText.textContent = comment.comment_content;
                     commentContent.appendChild(commentText);
 
+                    commentMetaContent.appendChild(commentMeta);
+                    commentMetaContent.appendChild(commentContent);
+
                     const commentActions = document.createElement('div');
                     commentActions.classList.add('comment-actions');
                     
@@ -147,9 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         commentActions.appendChild(editButton);
                         commentActions.appendChild(deleteButton);
                     }
+                    console.log('로그인한 사용자 ID:', currentUserId);
+                    console.log('댓글 작성자 ID', comment.user_id);
 
-                    commentBody.appendChild(commentMeta);
-                    commentBody.appendChild(commentContent);
+                    commentBody.appendChild(commentMetaContent);
                     commentBody.appendChild(commentActions);
                     commentElement.appendChild(commentBody);
                     commentContainer.appendChild(commentElement);
@@ -191,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
-                    body: JSON.stringify({ content: commentText })
+                    body: JSON.stringify({ commentContent: commentText })
                 })
                     .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                     .then(() => {
@@ -208,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
-                    body: JSON.stringify({ content: commentText })
+                    body: JSON.stringify({ commentContent: commentText })
                 })
                     .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                     .then(() => {

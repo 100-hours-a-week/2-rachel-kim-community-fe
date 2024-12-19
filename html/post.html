@@ -53,22 +53,25 @@
             <div class="comment-container">
                 <!-- 댓글 내용 동적 생성
                 <div class="comment-body">
-                    <div class="comment-meta">
-                        <img src="/assets/images/profile-icon.webp" alt="댓글 작성자 이미지" class="comment-author-photo">
-                        <span class="comment-author-name">더미 작성자 1</span>
-                        <span class="comment-date">2021-01-01</span>
-                        <span class="comment-time">00:00:00</span>
+                    <div class="comment-meta-content">
+                        <div class="comment-meta">
+                            <img src="/assets/images/profile-icon.webp" alt="댓글 작성자 이미지" class="comment-author-photo">
+                            <span class="comment-author-name">더미 작성자 1</span>
+                            <span class="comment-date">2021-01-01</span>
+                            <span class="comment-time">00:00:00</span>
+                        </div>
+                        <div class="comment-content">
+                            <p>댓글 내용</p>
+                        </div>
                     </div>
-                    <div class="comment-content">
-                        <p>댓글 내용</p>
+                    <div class="comment-actions">
+                        <button class="edit-comment-button">수정</button>
+                        <button class="delete-comment-button">삭제</button>
                     </div>
                 </div>
-                <div class="comment-actions">
-                    <button class="edit-comment-button">수정</button>
-                    <button class="delete-comment-button">삭제</button>
-                </div>
-            </div> 
-            -->
+                
+                -->
+            </div>
         </div>
     </div>
     <div class="overlay">
@@ -95,6 +98,7 @@
             </div>
         </div>
     </div>
+    <script src="/config.js"></script>
     <script src="/js/post.js"></script>
 </body>
 </html>

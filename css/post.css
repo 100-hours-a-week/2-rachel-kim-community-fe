@@ -268,16 +268,20 @@
 
 .comment-container{
     display: flex;
-    justify-content: space-between; 
-    align-items: center;
+    flex-direction: column;
     width: 100%;
-    margin: 20px;
-    padding: 0 20px;
+    padding: 10px;
 }
 
 .comment-body {
-    display: flex;
+    display: flex; 
+    gap: 20px; /* meta-content와 actions 간격 */
+}
+
+.comment-meta-content {
+    display: flex; 
     flex-direction: column;
+    flex: 1; /* 왼쪽 영역 최대 사용 */
 }
 
 .comment-meta {
@@ -290,6 +294,8 @@
     width: 36px;
     height: 36px;
     margin-right: 10px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .comment-author-name {

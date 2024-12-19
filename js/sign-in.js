@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupButton = document.getElementById('signup-button');
     const loginLink = document.getElementById('login-link');
     const backArrow = document.getElementById('back-arrow');
-    //const BACKEND_URL = 'http://localhost:4000';
-    const BACKEND_URL = 'http://3.39.23.86:4000';
     
     let isProfilePhotoUploaded = false;
     let isEmailValid = false;
