@@ -44,15 +44,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 서버와 통신하여 게시글 추가 
         const formData = new FormData();
-        formData.append('title', titleInput.value.trim());
-        formData.append('content', contentInput.value.trim());
-        if (file) {
-            formData.append('image', fileInput.files[0]);
+        formData.append('postTitle', titleInput.value.trim());
+        formData.append('postContent', contentInput.value.trim());
+        if (fileInput.files[0]) {
+            formData.append('attachFilePath', fileInput.files[0]);
         }
+        console.log('보내는 데이터:', Array.from(formData.entries())); // 요청 데이터 확인
 
-        fetch('/api/posts', {
+        fetch(`${BACKEND_URL}/api/posts/new`, {
             method: 'POST',
             body: formData, 
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // JWT 토큰
+            },
         })
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then(() => {

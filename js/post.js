@@ -318,6 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const base64 = base64Url.replace('-', '+').replace('_', '/');
         try {
             const decoded = JSON.parse(window.atob(base64));
+            console.log('디코딩된 JWT:', decoded);
             return decoded;
         } catch (error) {
             console.error('JWT 디코딩 오류:', error);
@@ -328,9 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
     function getLoggedInUserId() {
         const token = localStorage.getItem('authToken'); 
+        console.log('사용할 authToken:', token);
         if (token) {
             const decodedToken = decodeJWT(token);  
-            return decodedToken?.id;  // JWT에 user_id가 `id` 키에 저장되었는지 확인
+            return decodedToken?.user_id;  // JWT에 user_id가 `id` 키에 저장되었는지 확인
         }
         return null;  
     }

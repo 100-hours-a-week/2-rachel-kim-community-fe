@@ -70,7 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.data && data.data.auth_token) {
                     // 로그인 성공 시 
+                    console.log('로그인 응답 데이터:', data);
+
                     localStorage.setItem('authToken', data.data.auth_token);
+                    
+                    console.log('저장된 authToken:', localStorage.getItem('authToken'));
+                    
                     window.location.href = '/posts';
                 } else {
                     // 로그인 실패 시 
