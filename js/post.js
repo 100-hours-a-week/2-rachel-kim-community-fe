@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 게시글 수정 버튼 클릭 시 
     editPostButton.addEventListener('click', () => {
-        window.location.href = `/post/${postId}/edit`;
+        window.location.href = `/posts/${postId}/edit`;
     });
 
     // 게시글 삭제 버튼 클릭 시

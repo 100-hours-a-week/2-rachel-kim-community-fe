@@ -16,14 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 서버와 통신하여 기존 게시글 상세 조회
-    fetch(`/api/posts/${postId}`, {
+    fetch(`${BACKEND_URL}/api/posts/${postId}`, {
         method: 'GET'
     })
     .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
     .then(data => {
-        titleInput.value = data.title;
-        contentInput.value = data.content;
-        fileNameElement.textContent = data.imageUrl ? data.imageUrl.split('/').pop() : '파일을 선택해주세요.';
+        const post = data.data;
+
+        titleInput.value = post.post_title;
+        contentInput.value = post.post_content;
+        fileNameElement.textContent = post.post_image_path ? post.post_image_path.split('/').pop() : '파일을 선택해주세요.';
     })
     .catch(error => {
         console.error('게시글 데이터 로드 오류:', error);
@@ -59,22 +61,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 서버와 통신하여 게시글 수정
         const formData = new FormData();
-        formData.append('title', title);
-        formData.append('content', content);
+        formData.append('postTitle', title);
+        formData.append('postContent', content);
+        
         if (fileInput.files[0]) {
-            formData.append('image', fileInput.files[0]);
+            formData.append('attachFilePath', fileInput.files[0]);
+        } else if (fileNameElement.textContent !== '파일을 선택해주세요.') {
+            formData.append('existingImagePath', `/public/image/posts/${fileNameElement.textContent}`);
         }
 
-        fetch(`/api/posts/${postId}`, {
+        fetch(`${BACKEND_URL}/api/posts/${postId}`, {
             method: 'PATCH', 
             body: formData, 
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`, // JWT 토큰
+            },
         })
-        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-        .then(() => {
-            window.location.href = `/posts/${postId}`;
-        })
-        .catch(error => {
-            console.error('게시글 수정 실패:', error.message);
-        });
+            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+            .then(data => {
+                const post = data.data;
+
+                // 제목과 내용을 입력 필드에 설정
+                titleInput.value = post.post_title;
+                contentInput.value = post.post_content;
+
+                // 이미지 파일명 표시
+                fileNameElement.textContent = post.original_file_name || '파일을 선택해주세요.';  
+                window.location.href = `/posts/${postId}`;
+            })
+            .catch(error => {
+                console.error('게시글 수정 실패:', error.message);
+            });
     });
 });
