@@ -1,7 +1,38 @@
 /* posts.js */
 
 document.addEventListener('DOMContentLoaded', () => {
+    const profileImg = document.getElementById('profile-img');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
     const createPostButton = document.getElementById('create-post-button');
+    const userId = getLoggedInUserId();  
+    const token = localStorage.getItem('authToken');
+
+    // JWT 토큰 만료 시
+    if (!token) {
+        console.error('JWT 토큰이 없습니다. 로그인 페이지로 리다이렉트합니다.');
+        window.location.href = '/login';
+    }
+    
+    // 프로필 이미지 클릭 시
+    profileImg.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    // 드롭 다운 메뉴 항목 클릭 시
+    dropdownMenu.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target.tagName === 'A') {
+            event.preventDefault(); 
+    
+            if (target.id === 'profile-link') {
+                window.location.href = `/users/${userId}/profile`;  
+            } else if (target.id === 'password-link') {
+                window.location.href = `/users/${userId}/password`;  
+            } else if (target.id === 'logout-link') {
+                window.location.href = '/login';  
+            }
+        }
+    });
 
     // 게시글 작성 버튼 클릭 시
     createPostButton.addEventListener('click', () => {
@@ -102,6 +133,25 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => {
             console.error('게시글 목록 조회 실패:', error);
         });
+
+    function decodeJWT(token) {
+        // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const decoded = JSON.parse(window.atob(base64));
+        return decoded;
+    }
+
+    // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
+    function getLoggedInUserId() {
+        const token = localStorage.getItem('authToken'); 
+        if (token) {
+            const decodedToken = decodeJWT(token);  
+            return decodedToken?.user_id; 
+        }
+        console.error('JWT 토큰이 없거나 유효하지 않습니다.');
+        return null;  
+    }
 
     // 좋이요 수, 댓글 수, 조회 수 표기
     const updateCount = (element, label, count) => {

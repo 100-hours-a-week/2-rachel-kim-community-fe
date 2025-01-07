@@ -48,10 +48,6 @@
     height: 36px; 
 }
 
-.profile-img {
-    cursor: pointer;
-}
-
 .dropdown-menu {
     display: none;
     position: absolute;  

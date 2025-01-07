@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isProfilePhotoUploaded && isEmailValid && isPasswordValid && isConfirmPasswordValid && isNicknameValid) {
             // 서버와 통신하여 회원가입(프로필 사진, 이메일, 비밀번호, 닉네임) 
             const formData = new FormData();
-            formData.append('profile_photo', profilePhotoInput.files[0]);
+            formData.append('profilePhoto', profilePhotoInput.files[0]);
             formData.append('email', emailInput.value.trim());
             formData.append('password', passwordInput.value);
             formData.append('nickname', nicknameInput.value.trim());

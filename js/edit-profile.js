@@ -18,17 +18,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const userId = getLoggedInUserId();  
 
     // 서버와 통신하여 유저 정보 조회 (이메일, 프로필 사진, 닉네임)
-    fetch(`/api/users/${userId}`)
+    fetch(`${BACKEND_URL}/api/users/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 헤더 추가
+        },
+    })
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
         .then((data) => {
-            if (data.email) {
-                emailArea.textContent = data.email; 
+            if (data.data.email) {
+                emailArea.textContent = data.data.email; 
             }
-            if (data.profileImageUrl) {
-                currentProfilePhoto.src = data.profileImageUrl; 
+            if (data.data.profile_image_path) {
+                currentProfilePhoto.src = `${BACKEND_URL}${data.data.profile_image_path}`;
             }
-            if (data.nickname) {
-                nicknameInput.value = data.nickname; 
+            if (data.data.nickname) {
+                nicknameInput.value = data.data.nickname; 
             }
         })
         .catch((error) => console.error('유저 정보 조회 실패:', error));
@@ -92,15 +97,23 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         } else {
             // 서버와 통신하여 닉네임 중복 체크
-            fetch(`/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`)
-                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-                .then((data) => {
-                    if (data.exists) {
+            fetch(`${BACKEND_URL}/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+            })
+                .then((response) => {
+                    if (response.status === 409) {
                         helperText.textContent = '*중복된 닉네임입니다.';
                         helperText.style.display = 'block';
-                    } else {
+                        return;
+                    } else if (response.status === 200) {
                         helperText.textContent = '';
-                    }
+                        helperText.style.display = 'none';
+                        return;
+                    } else {
+                        return Promise.reject(`서버 에러 발생: ${response.status}`);
+                    }   
                 })
                 .catch((error) => console.error('닉네임 중복 체크 실패:', error));
         }
@@ -125,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 모달 확인 버튼 클릭 시
     confirmButton.addEventListener('click', () => {
         // 서버와 통신하여 회원정보 삭제
-        fetch(`/api/users/${userId}`, {
+        fetch(`${BACKEND_URL}/api/users/${userId}`, {
             method: 'DELETE',
             headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -149,17 +162,25 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('profilePhoto', profilePhotoFile);
         }
 
-        fetch(`/api/users/${userId}`, {
+        fetch(`${BACKEND_URL}/api/users/${userId}`, {
             method: 'PATCH',
             body: formData,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            },
         })
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then((data) => {
                 showToast('수정 완료!');
-                if (data.profileImageUrl) {
+                if (data.profile_image_path) {
                     // 새 프로필 사진 업로드
-                    currentProfilePhoto.src = data.profileImageUrl;
+                    currentProfilePhoto.src = data.profile_image_path;
                 }
+
+                // 수정 완료 후 게시글 페이지로 이동
+                setTimeout(() => {
+                    window.location.href = '/posts'; // 게시글 페이지 경로로 리다이렉트
+                }, 1500); // 토스트 메시지가 표시된 후 약간의 딜레이
             })
             .catch((error) => console.error('회원정보 수정 실패:', error));
     });
@@ -168,8 +189,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace('-', '+').replace('_', '/');
-        const decoded = JSON.parse(window.atob(base64));
-        return decoded;
+        try {
+            const decoded = JSON.parse(window.atob(base64));
+            return decoded;
+        } catch (error) {
+            console.error('JWT 디코딩 오류:', error);
+            return null;
+        }
     }
 
     // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
@@ -177,8 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const token = localStorage.getItem('authToken'); 
         if (token) {
             const decodedToken = decodeJWT(token);  
-            return decodedToken.userId; 
+            return decodedToken?.user_id; 
         }
+        console.error('JWT 토큰이 없거나 유효하지 않습니다.');
         return null;  
     }
 

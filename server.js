@@ -16,37 +16,44 @@ app.get('/', (req, res) => {
   res.redirect('/login');  // 기본적으로 로그인 페이지로 리다이렉트
 });
 
+// 로그인 페이지
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'log-in.html'));  // 로그인 페이지
+  res.sendFile(path.join(__dirname, 'html', 'log-in.html'));  
 });
 
+// 회원가입 페이지
 app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'sign-in.html'));  // 회원가입 페이지
+  res.sendFile(path.join(__dirname, 'html', 'sign-in.html'));  
 });
 
+// 게시글 목록 페이지
 app.get('/posts', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'posts.html'));  // 게시글 목록 페이지
+  res.sendFile(path.join(__dirname, 'html', 'posts.html'));  
 });
 
-// new와 :id 순서 중요 (충돌 가능성)
+// 게시글 작성 페이지
 app.get('/posts/new', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'make-post.html'));  // 게시글 작성 페이지
+  res.sendFile(path.join(__dirname, 'html', 'make-post.html'));  // new와 :id 순서 중요 (충돌 가능성)
 });
 
+// 게시글 상세 페이지
 app.get('/posts/:id', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'post.html'));  // 게시글 상세 페이지
+  res.sendFile(path.join(__dirname, 'html', 'post.html'));  
 });
 
+// 게시글 수정 페이지
 app.get('/posts/:id/edit', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'edit-post.html'));  // 게시글 수정 페이지
+  res.sendFile(path.join(__dirname, 'html', 'edit-post.html'));  
 });
 
+// 프로필 수정 페이지
 app.get('/users/:id/profile', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'edit-profile.html'));  // 프로필 수정 페이지
+  res.sendFile(path.join(__dirname, 'html', 'edit-profile.html'));  
 });
 
+// 비밀번호 변경 페이지
 app.get('/users/:id/password', (req, res) => {
-  res.sendFile(path.join(__dirname, 'html', 'edit-password.html'));  // 비밀번호 변경 페이지
+  res.sendFile(path.join(__dirname, 'html', 'edit-password.html'));  
 });
 
 app.listen(PORT, () => {
