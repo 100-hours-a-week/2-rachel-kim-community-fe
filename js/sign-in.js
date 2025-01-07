@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // 서버와 통신하여 닉네임 중복 체크
             fetch(`${BACKEND_URL}/api/users/nickname/check?nickname=${encodeURIComponent(nickname)}`, {
                 method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
             })
                 .then(response => {
                     if (response.status === 409) {

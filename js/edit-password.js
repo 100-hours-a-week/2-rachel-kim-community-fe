@@ -51,18 +51,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // 서버와 통신하여 비밀번호 변경
         const password = passwordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
 
-        fetch(`/api/users/${userId}/password`, {
+        fetch(`${BACKEND_URL}/api/users/${userId}/password`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`, 
             },
-            body: JSON.stringify({password})
+            body: JSON.stringify({ password, confirmPassword })
         })
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
         .then(() => {
             showToast('수정 완료!');
+            // 수정 완료 후 게시글 페이지로 이동
+            setTimeout(() => {
+                window.location.href = '/posts'; // 게시글 페이지 경로로 리다이렉트
+            }, 1500); // 토스트 메시지가 표시된 후 약간의 딜레이
         })
         .catch((error) => console.error('비밀번호 수정 실패:', error));
     });
@@ -71,8 +76,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace('-', '+').replace('_', '/');
-        const decoded = JSON.parse(window.atob(base64));
-        return decoded;
+        try {
+            const decoded = JSON.parse(window.atob(base64));
+            return decoded;
+        } catch (error) {
+            console.error('JWT 디코딩 오류:', error);
+            return null;
+        }
     }
 
     // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
@@ -80,8 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const token = localStorage.getItem('authToken'); 
         if (token) {
             const decodedToken = decodeJWT(token);  
-            return decodedToken.userId; 
+            return decodedToken?.user_id; 
         }
+        console.error('JWT 토큰이 없거나 유효하지 않습니다.');
         return null;  
     }
 
