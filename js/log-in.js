@@ -14,12 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(() => {
-        // 이미 로그인된 경우 게시글 페이지로 리다이렉트
-        window.location.href = '/posts';
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '/posts'; // 로그인 상태면 게시글 페이지로 이동
+        }
     })
     .catch(() => {
-        // 로그인되지 않은 경우 그대로 로그인 페이지 표시
+        // 로그인되지 않은 상태, 로그인 페이지 유지
     });
 
     let isEmailValid = false;

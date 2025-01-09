@@ -14,14 +14,20 @@ document.addEventListener("DOMContentLoaded", () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
+    .then(response => {
+        if (response.status === 403) {
+            localStorage.removeItem('authToken'); // 만료된 토큰 삭제
+            window.location.href = '/login';
+        } else if (!response.ok) {
+            throw new Error('로그인 필요');
+        }
+        return response.json();
+    })
     .then(authData => {
         userId = authData.data.user_id; // 사용자 ID 저장
     })
-    .then(response => {
-        if (!response.ok) throw new Error("로그인 필요");
-        return response.json();
-    })
     .catch(() => {
+        console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
         window.location.href = '/login'; // 로그인 페이지로 리다이렉트
     });
     

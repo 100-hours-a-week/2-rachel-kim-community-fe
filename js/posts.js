@@ -4,15 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileImg = document.getElementById('profile-img');
     const dropdownMenu = document.querySelector('.dropdown-menu');
     const createPostButton = document.getElementById('create-post-button');
-    const token = localStorage.getItem('authToken');
-
+    
     let userId = null;
-
-    // JWT 토큰 만료 시
-    if (!token) {
-        console.error('JWT 토큰이 없습니다. 로그인 페이지로 리다이렉트합니다.');
-        window.location.href = '/login';
-    }
 
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
@@ -21,7 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403) {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login';
+        } else if (!response.ok) {
+            throw new Error('인증 실패');
+        }
+        return response.json();
+    })
     .then(authData => {
         userId = authData.data.user_id; 
     })

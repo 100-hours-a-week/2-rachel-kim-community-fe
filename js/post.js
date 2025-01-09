@@ -23,7 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403) {
+            console.error('JWT 토큰이 만료되었습니다.');
+            localStorage.removeItem('authToken');
+            window.location.href = '/login';
+        } else if (!response.ok) {
+            throw new Error('로그인 상태 확인 실패');
+        }
+        return response.json();
+    })
     .then(authData => {
         userId = authData.data.user_id;
         // 추후 함수로 만들어서 추가

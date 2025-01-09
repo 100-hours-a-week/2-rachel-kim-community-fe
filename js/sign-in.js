@@ -17,12 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(() => {
-        // 이미 로그인된 경우 게시글 페이지로 리다이렉트
-        window.location.href = '/posts';
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '/posts'; // 이미 로그인된 경우 게시글 페이지로 이동
+        }
     })
     .catch(() => {
-        // 로그인되지 않은 경우 그대로 회원가입 페이지 표시
+        // 로그인되지 않은 상태, 회원가입 페이지 유지
     });
     
     let isProfilePhotoUploaded = false;

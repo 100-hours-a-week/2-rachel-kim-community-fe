@@ -25,12 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.status === 403) {
+            localStorage.removeItem('authToken');
+            window.location.href = '/login';
+        } else if (!response.ok) {
+            throw new Error('인증 실패');
+        }
+        return response.json();
+    })
     .then(authData => {
         userId = authData.data.user_id; // `userId`만 저장
         initializeUserInfo(); // 로그인 상태 확인 후 유저 정보 초기화
     })
     .catch(() => {
+        console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
         window.location.href = '/login'; // 로그인되지 않은 경우 리다이렉트
     });
 
