@@ -4,8 +4,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmPasswordInput = document.getElementById("confirm-password");
     const editButton = document.getElementById("edit-button");
     const toast = document.getElementById('toast');
-    const userId = getLoggedInUserId();  
+    
+    let userId = null;
 
+    // 서버와 통신하여 로그인 상태 확인
+    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        },
+    })
+    .then(authData => {
+        userId = authData.data.user_id; // 사용자 ID 저장
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("로그인 필요");
+        return response.json();
+    })
+    .catch(() => {
+        window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+    });
+    
     let isPasswordValid = false;
     let isConfirmPasswordValid = false;
 
@@ -71,30 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch((error) => console.error('비밀번호 수정 실패:', error));
     });
-
-    function decodeJWT(token) {
-        // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
-        try {
-            const decoded = JSON.parse(window.atob(base64));
-            return decoded;
-        } catch (error) {
-            console.error('JWT 디코딩 오류:', error);
-            return null;
-        }
-    }
-
-    // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
-    function getLoggedInUserId() {
-        const token = localStorage.getItem('authToken'); 
-        if (token) {
-            const decodedToken = decodeJWT(token);  
-            return decodedToken?.user_id; 
-        }
-        console.error('JWT 토큰이 없거나 유효하지 않습니다.');
-        return null;  
-    }
 
     // 유효성 검사 상태에 따라 수정 버튼 활성화 
     function updateEditButtonState() {

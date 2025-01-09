@@ -7,6 +7,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupLink = document.getElementById('sign-up-link');
     const helperText = document.getElementById('helper-text');
 
+    // 서버와 통신하여 로그인 상태 확인
+    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        },
+    })
+    .then(() => {
+        // 이미 로그인된 경우 게시글 페이지로 리다이렉트
+        window.location.href = '/posts';
+    })
+    .catch(() => {
+        // 로그인되지 않은 경우 그대로 로그인 페이지 표시
+    });
+
     let isEmailValid = false;
     let isPasswordValid = false;
 

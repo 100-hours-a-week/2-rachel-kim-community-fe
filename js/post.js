@@ -13,7 +13,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const commentCancelButton = document.getElementById('comment-cancel-button');
     const urlSegments = window.location.pathname.split('/');
     const postId = urlSegments[urlSegments.length - 1];
-    const currentUserId = getLoggedInUserId(); 
+    
+    let userId = null;
+
+    // 로그인 상태 확인
+    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        },
+    })
+    .then(response => response.json())
+    .then(authData => {
+        userId = authData.data.user_id;
+        // 추후 함수로 만들어서 추가
+    })
+    .catch(() => {
+        console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
+        window.location.href = '/login';
+    });
+
 
     // 백애로우 클릭 시
     backArrow.addEventListener('click', () => {
@@ -84,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             postImage.src = `${BACKEND_URL}${post.post_image_path}`; 
 
             // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
-            if (post.user_id !== currentUserId) {
+            if (post.user_id !== userId) {
                 editPostButton.style.display = 'none';
                 deletePostButton.style.display = 'none';
             }
@@ -161,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     commentActions.classList.add('comment-actions');
                     
                     // 댓글 작성자 ID가 로그인한 유저의 ID와 동일한지 확인
-                    if (comment.user_id === currentUserId) {
+                    if (comment.user_id === userId) {
                         const editButton = document.createElement('button');
                         editButton.classList.add('edit-comment-button');
                         editButton.textContent = '수정';
@@ -171,8 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         commentActions.appendChild(editButton);
                         commentActions.appendChild(deleteButton);
                     }
-                    console.log('로그인한 사용자 ID:', currentUserId);
-                    console.log('댓글 작성자 ID', comment.user_id);
 
                     commentBody.appendChild(commentMetaContent);
                     commentBody.appendChild(commentActions);
@@ -185,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 초기 댓글 목록 (로그인 무관)
     fetchComments();
 
-    if (currentUserId) {
+    if (userId) {
         //로그인 사용자 기반으로 댓글 수정/ 삭제 버튼 업데이트
         fetchComments();  
     } else {
@@ -311,30 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
             element.textContent = count;
         }
     };
-
-    function decodeJWT(token) {
-        // JWT 토큰을 디코딩하여 유저 정보를 추출하는 함수
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
-        try {
-            const decoded = JSON.parse(window.atob(base64));
-            return decoded;
-        } catch (error) {
-            console.error('JWT 디코딩 오류:', error);
-            return null;
-        }
-    }
-
-    // 로그인된 사용자의 ID를 JWT 토큰에서 추출하는 함수
-    function getLoggedInUserId() {
-        const token = localStorage.getItem('authToken'); 
-        if (token) {
-            const decodedToken = decodeJWT(token);  
-            return decodedToken?.user_id;  // JWT에 user_id가 `id` 키에 저장되었는지 확인
-        }
-        console.error('JWT 토큰이 없거나 유효하지 않습니다.');
-        return null;  
-    }
 
     // 모달 열기 함수
     function openModal(modal) {

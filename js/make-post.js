@@ -9,6 +9,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitButton = document.getElementById('submit-button');
     const helperText = document.getElementById('helper-text');
 
+    // 서버와 통신하여 로그인 상태 확인
+    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+        method: "GET",
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        },
+    })
+    .then(response => response.json())
+    .then(authData => {
+        if (!authData.data || authData.data.user_id !== currentUserId) {
+            alert("권한이 없습니다.");
+            window.location.href = '/posts';
+        }
+    })
+    .catch(() => {
+        window.location.href = '/login';
+    });
+    
     // 백애로우 클릭 시
     backArrow.addEventListener('click', () => {
         window.location.href='/posts';
