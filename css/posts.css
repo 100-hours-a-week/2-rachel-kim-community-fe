@@ -46,6 +46,9 @@
     cursor: pointer;
     width: 36px;
     height: 36px; 
+    border-radius: 50%; /* 둥글게 만들기 */
+    object-fit: cover; /* 이미지 비율 유지 */
+    overflow: hidden;
 }
 
 .dropdown-menu {

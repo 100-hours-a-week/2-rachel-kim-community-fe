@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('toast');
     
     let userId = null;
+    let profileImagePath = null;
 
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
@@ -36,6 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(authData => {
         userId = authData.data.user_id; // `userId`만 저장
+        profileImagePath = authData.data.profile_image_path;
+        // 프로필 이미지 업데이트
+        if (profileImagePath) {
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+        }
         initializeUserInfo(); // 로그인 상태 확인 후 유저 정보 초기화
     })
     .catch(() => {

@@ -2,6 +2,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const backArrow = document.getElementById('back-arrow');
+    const profileImg = document.getElementById('profile-img');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
     const helperText = document.getElementById('helper-text');
@@ -9,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileNameElement = document.getElementById('file-name');
     const editButton = document.getElementById('edit-button');
     const postId = window.location.pathname.split('/')[2];
+
+    let userId = null;
+    let profileImagePath = null;
 
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
@@ -27,14 +32,42 @@ document.addEventListener('DOMContentLoaded', () => {
         return response.json();
     })
     .then(authData => {
-        if (!authData.data || authData.data.user_id !== currentUserId) {
-            alert("권한이 없습니다.");
+        if (!authData.data?.user_id) {
+            console.error('로그인된 사용자 정보가 없습니다.');
             window.location.href = '/posts';
+        }
+        userId = authData.data.user_id; // 로그인된 사용자 ID 저장
+        profileImagePath = authData.data.profile_image_path;
+        // 프로필 이미지 업데이트
+        if (profileImagePath) {
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
         }
     })
     .catch(() => {
         console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
         window.location.href = '/login';
+    });
+
+    // 프로필 이미지 클릭 시
+    profileImg.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    // 드롭 다운 메뉴 항목 클릭 시
+    dropdownMenu.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target.tagName === 'A') {
+            event.preventDefault(); 
+    
+            if (target.id === 'profile-link') {
+                window.location.href = `/users/${userId}/profile`;  
+            } else if (target.id === 'password-link') {
+                window.location.href = `/users/${userId}/password`;  
+            } else if (target.id === 'logout-link') {
+                localStorage.removeItem('authToken'); // JWT 토큰 삭제
+                window.location.href = '/login';  
+            }
+        }
     });
     
     // 백애로우 클릭 시

@@ -1,6 +1,8 @@
 /* post.js */
 document.addEventListener('DOMContentLoaded', () => {
     const backArrow = document.getElementById('back-arrow');
+    const profileImg = document.getElementById('profile-img');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
     const editPostButton = document.getElementById('edit-post-button');
     const deletePostButton = document.getElementById('delete-post-button');
     const deletePostModal = document.getElementById('delete-post-modal');
@@ -15,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const postId = urlSegments[urlSegments.length - 1];
     
     let userId = null;
+    let profileImagePath = null;
 
     // 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
@@ -35,17 +38,51 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(authData => {
         userId = authData.data.user_id;
-        // 추후 함수로 만들어서 추가
+        if (!userId) {
+            console.error('userId가 응답에 없습니다:', authData);
+        } else {
+            console.log('로그인된 사용자 ID:', userId);
+        }
+
+        profileImagePath = authData.data.profile_image_path;
+        // 프로필 이미지 업데이트
+        if (profileImagePath) {
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+        }
+
+        fetchPostDetails();
+        fetchComments();
     })
     .catch(() => {
         console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
         window.location.href = '/login';
     });
 
-
     // 백애로우 클릭 시
     backArrow.addEventListener('click', () => {
         window.location.href = '/posts';
+    });
+
+    // 프로필 이미지 클릭 시
+    profileImg.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    // 드롭 다운 메뉴 항목 클릭 시
+    dropdownMenu.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target.tagName === 'A') {
+            event.preventDefault(); 
+    
+            if (target.id === 'profile-link') {
+                window.location.href = `/users/${userId}/profile`;  
+            } else if (target.id === 'password-link') {
+                window.location.href = `/users/${userId}/password`;  
+            } else if (target.id === 'logout-link') {
+                localStorage.removeItem('authToken'); // JWT 토큰 삭제
+                window.location.href = '/login';  
+            }
+        }
     });
 
     // 게시글 수정 버튼 클릭 시 
@@ -83,49 +120,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 서버와 통신하여 게시글 상세 조회
-    fetch(`${BACKEND_URL}/api/posts/${postId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        }
-    })
-        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-        .then(responseData => {
-            const post = responseData.data;
-
-            // 게시글 제목, 본문, 작성자, 게시일 등을 HTML 요소에 반영
-            const title = document.getElementById('title');
-            const authorPhoto = document.getElementById('author-photo')
-            const authorName = document.getElementById('author-name');
-            const postDate = document.getElementById('post-date');
-            const postTime = document.getElementById('post-time');
-            const postContent = document.querySelector('.post-content p');
-            const postImage = document.querySelector('.post-image img');
-
-            // 게시글 데이터 업데이트
-            title.textContent = post.post_title;
-            authorPhoto.src = `${BACKEND_URL}${post.profile_image_path}`; 
-            authorName.textContent = post.nickname; 
-            postDate.textContent = new Date(post.created_at).toLocaleDateString(); 
-            postTime.textContent = new Date(post.created_at).toLocaleTimeString(); 
-            postContent.textContent = post.post_content;
-            postImage.src = `${BACKEND_URL}${post.post_image_path}`; 
-
-            // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
-            if (post.user_id !== userId) {
-                editPostButton.style.display = 'none';
-                deletePostButton.style.display = 'none';
+    const fetchPostDetails = () => {
+        fetch(`${BACKEND_URL}/api/posts/${postId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             }
-
-            // 좋아요수, 조회 수, 댓글 수 업데이트
-            const likeCount = document.getElementById('like-count');
-            const viewCount = document.getElementById('view-count');
-            const commentCount = document.getElementById('comment-count');
-            updateCount(likeCount, post.likes);
-            updateCount(viewCount, post.views);
-            updateCount(commentCount, post.comment_count);
         })
-        .catch(error => console.error('게시글 데이터 로드 오류:', error));
+            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+            .then(responseData => {
+                const post = responseData.data;
+
+                // 게시글 제목, 본문, 작성자, 게시일 등을 HTML 요소에 반영
+                const title = document.getElementById('title');
+                const authorPhoto = document.getElementById('author-photo')
+                const authorName = document.getElementById('author-name');
+                const postDate = document.getElementById('post-date');
+                const postTime = document.getElementById('post-time');
+                const postContent = document.querySelector('.post-content p');
+                const postImage = document.querySelector('.post-image img');
+
+                // 게시글 데이터 업데이트
+                title.textContent = post.post_title;
+                authorPhoto.src = `${BACKEND_URL}${post.profile_image_path}`; 
+                authorName.textContent = post.nickname; 
+                postDate.textContent = new Date(post.created_at).toLocaleDateString(); 
+                postTime.textContent = new Date(post.created_at).toLocaleTimeString(); 
+                postContent.textContent = post.post_content;
+                postImage.src = `${BACKEND_URL}${post.post_image_path}`; 
+
+                // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
+                if (post.user_id !== userId) {
+                    editPostButton.style.display = 'none';
+                    deletePostButton.style.display = 'none';
+                }
+
+                // 좋아요수, 조회 수, 댓글 수 업데이트
+                const likeCount = document.getElementById('like-count');
+                const viewCount = document.getElementById('view-count');
+                const commentCount = document.getElementById('comment-count');
+                updateCount(likeCount, post.likes);
+                updateCount(viewCount, post.views);
+                updateCount(commentCount, post.comment_count);
+            })
+            .catch(error => console.error('게시글 데이터 로드 오류:', error));
+    }
 
     // 서버와 통신하여 댓글 목록 조회
     const fetchComments = () => {
@@ -199,7 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         commentActions.appendChild(editButton);
                         commentActions.appendChild(deleteButton);
                     }
-
+                    // 디버깅
+                    console.log("댓글 사용 userId: ", userId);
                     commentBody.appendChild(commentMetaContent);
                     commentBody.appendChild(commentActions);
                     commentElement.appendChild(commentBody);
@@ -210,13 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     // 초기 댓글 목록 (로그인 무관)
     fetchComments();
-
-    if (userId) {
-        //로그인 사용자 기반으로 댓글 수정/ 삭제 버튼 업데이트
-        fetchComments();  
-    } else {
-        console.error('로그인된 사용자 정보가 없습니다.');
-    }
 
     // 댓글 등록 버튼 활성화
     commentInput.addEventListener('input', () => {
@@ -235,6 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (commentText) {
             if (isAdding) {
+                // 디버깅
+                console.log('보내는 댓글 데이터:', { commentContent: commentText });
                 // 서버와 통신하여 댓글 등록 
                 fetch(`${BACKEND_URL}/api/posts/${postId}/comments`, {
                     method: 'POST',
@@ -243,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
                     },
                     body: JSON.stringify({ commentContent: commentText })
+
                 })
                     .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                     .then(() => {

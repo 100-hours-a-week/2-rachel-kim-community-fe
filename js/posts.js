@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const createPostButton = document.getElementById('create-post-button');
     
     let userId = null;
+    let profileImagePath = null;
 
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
@@ -25,6 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(authData => {
         userId = authData.data.user_id; 
+        profileImagePath = authData.data.profile_image_path;
+        // 프로필 이미지 업데이트
+        if (profileImagePath) {
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+        }
     })
     .catch(() => {
         console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
@@ -47,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (target.id === 'password-link') {
                 window.location.href = `/users/${userId}/password`;  
             } else if (target.id === 'logout-link') {
+                localStorage.removeItem('authToken'); // JWT 토큰 삭제
                 window.location.href = '/login';  
             }
         }

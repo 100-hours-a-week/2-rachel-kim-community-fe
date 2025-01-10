@@ -1,11 +1,14 @@
 // edit-password.js
 document.addEventListener("DOMContentLoaded", () => {
+    const profileImg = document.getElementById('profile-img');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
     const passwordInput = document.getElementById("password");
     const confirmPasswordInput = document.getElementById("confirm-password");
     const editButton = document.getElementById("edit-button");
     const toast = document.getElementById('toast');
     
     let userId = null;
+    let profileImagePath = null;
 
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
@@ -25,10 +28,37 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(authData => {
         userId = authData.data.user_id; // 사용자 ID 저장
+        profileImagePath = authData.data.profile_image_path;
+        // 프로필 이미지 업데이트
+        if (profileImagePath) {
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+        }
     })
     .catch(() => {
         console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
         window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+    });
+
+    // 프로필 이미지 클릭 시
+    profileImg.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('show');
+    });
+
+    // 드롭 다운 메뉴 항목 클릭 시
+    dropdownMenu.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target.tagName === 'A') {
+            event.preventDefault(); 
+    
+            if (target.id === 'profile-link') {
+                window.location.href = `/users/${userId}/profile`;  
+            } else if (target.id === 'password-link') {
+                window.location.href = `/users/${userId}/password`;  
+            } else if (target.id === 'logout-link') {
+                localStorage.removeItem('authToken'); // JWT 토큰 삭제
+                window.location.href = '/login';  
+            }
+        }
     });
     
     let isPasswordValid = false;
