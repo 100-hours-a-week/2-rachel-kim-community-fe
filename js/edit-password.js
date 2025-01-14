@@ -26,12 +26,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return response.json();
     })
-    .then(authData => {
-        userId = authData.data.user_id; // 사용자 ID 저장
-        profileImagePath = authData.data.profile_image_path;
-        // 프로필 이미지 업데이트
+    .then(({ data: { user_id, profile_image_path } }) => { 
+        userId = user_id; // 사용자 ID 저장
+        profileImagePath = profile_image_path;
         if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // 프로필 이미지 업데이트
         }
     })
     .catch(() => {
@@ -40,16 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 프로필 이미지 클릭 시
-    profileImg.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('show');
-    });
+    profileImg.addEventListener('click', () => dropdownMenu.classList.toggle('show')); 
 
     // 드롭 다운 메뉴 항목 클릭 시
     dropdownMenu.addEventListener('click', (event) => {
-        const target = event.target;
+        const { target } = event;
         if (target.tagName === 'A') {
             event.preventDefault(); 
-    
             if (target.id === 'profile-link') {
                 window.location.href = `/users/${userId}/profile`;  
             } else if (target.id === 'password-link') {
@@ -119,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
         .then(() => {
             showToast('수정 완료!');
-            // 수정 완료 후 게시글 페이지로 이동
             setTimeout(() => {
                 window.location.href = '/posts'; // 게시글 페이지 경로로 리다이렉트
             }, 1500); // 토스트 메시지가 표시된 후 약간의 딜레이
@@ -142,10 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function showToast(message) {
         toast.textContent = message; 
         toast.classList.add('show'); 
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 1000); 
+        setTimeout(() => toast.classList.remove('show'), 1000);
     }
 
     // 헬퍼 텍스트 설정 함수

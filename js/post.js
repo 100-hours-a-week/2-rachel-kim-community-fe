@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(response => {
+    .then((response) => {
         if (response.status === 403) {
             console.error('JWT 토큰이 만료되었습니다.');
             localStorage.removeItem('authToken');
@@ -39,16 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return response.json();
     })
-    .then(authData => {
-        userId = authData.data.user_id;
+    .then(({ data: { user_id, profile_image_path } }) => {
+        userId = user_id;
         if (!userId) {
-            console.error('userId가 응답에 없습니다:', authData);
+            console.error('로그인된 사용자 정보가 없습니다.');
         }
 
-        profileImagePath = authData.data.profile_image_path;
-        // 프로필 이미지 업데이트
+        profileImagePath = profile_image_path;
         if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // 프로필 이미지 업데이트
         }
 
         fetchPostDetails();
@@ -65,13 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 프로필 이미지 클릭 시
-    profileImg.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('show');
-    });
+    profileImg.addEventListener('click', () => dropdownMenu.classList.toggle('show'));
 
     // 드롭 다운 메뉴 항목 클릭 시
     dropdownMenu.addEventListener('click', (event) => {
-        const target = event.target;
+        const { target } = event;
         if (target.tagName === 'A') {
             event.preventDefault(); 
     
@@ -110,14 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`, 
             } 
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(() => {
-                closeModal(deletePostModal);
-                window.location.href = '/posts';
-            })
-            .catch(error => {
-                console.error('게시글 삭제 오류:', error)
-            });
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(() => {
+            closeModal(deletePostModal);
+            window.location.href = '/posts';
+        })
+        .catch(error => console.error('게시글 삭제 오류:', error));
     });
 
     // 서버와 통신하여 게시글 상세 조회
@@ -128,52 +123,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             }
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(responseData => {
-                const post = responseData.data;
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(({ data: post }) => {
+            // 게시글 제목, 본문, 작성자, 게시일 등을 HTML 요소에 반영
+            const title = document.getElementById('title');
+            const authorPhoto = document.getElementById('author-photo')
+            const authorName = document.getElementById('author-name');
+            const postDate = document.getElementById('post-date');
+            const postTime = document.getElementById('post-time');
+            const postContent = document.querySelector('.post-content p');
+            const postImage = document.querySelector('.post-image img');
 
-                // 게시글 제목, 본문, 작성자, 게시일 등을 HTML 요소에 반영
-                const title = document.getElementById('title');
-                const authorPhoto = document.getElementById('author-photo')
-                const authorName = document.getElementById('author-name');
-                const postDate = document.getElementById('post-date');
-                const postTime = document.getElementById('post-time');
-                const postContent = document.querySelector('.post-content p');
-                const postImage = document.querySelector('.post-image img');
+            // 게시글 데이터 업데이트
+            title.textContent = post.post_title;
+            authorPhoto.src = `${BACKEND_URL}${post.profile_image_path}`; 
+            authorName.textContent = post.nickname; 
+            postDate.textContent = new Date(post.created_at).toLocaleDateString(); 
+            postTime.textContent = new Date(post.created_at).toLocaleTimeString(); 
+            postContent.textContent = post.post_content;
+            // 이미지 경로가 없으면 이미지 숨김 처리
+            if (!post.post_image_path) {
+                postImage.style.display = 'none'; // 이미지 숨김
+            } else {
+                postImage.style.display = 'block'; // 이미지 표시
+                postImage.src = `${BACKEND_URL}${post.post_image_path}`;
+            }
 
-                // 게시글 데이터 업데이트
-                title.textContent = post.post_title;
-                authorPhoto.src = `${BACKEND_URL}${post.profile_image_path}`; 
-                authorName.textContent = post.nickname; 
-                postDate.textContent = new Date(post.created_at).toLocaleDateString(); 
-                postTime.textContent = new Date(post.created_at).toLocaleTimeString(); 
-                postContent.textContent = post.post_content;
-                // 이미지 경로가 없으면 이미지 숨김 처리
-                if (!post.post_image_path) {
-                    postImage.style.display = 'none'; // 이미지 숨김
-                } else {
-                    postImage.style.display = 'block'; // 이미지 표시
-                    postImage.src = `${BACKEND_URL}${post.post_image_path}`;
-                }
+            // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
+            if (post.user_id !== userId) {
+                editPostButton.style.display = 'none';
+                deletePostButton.style.display = 'none';
+            }
 
-                // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
-                if (post.user_id !== userId) {
-                    editPostButton.style.display = 'none';
-                    deletePostButton.style.display = 'none';
-                }
-
-                // 좋아요수, 조회 수, 댓글 수 업데이트
-                const likeCount = document.getElementById('like-count');
-                const viewCount = document.getElementById('view-count');
-                const commentCount = document.getElementById('comment-count');
-                updateCount(likeCount, post.likes);
-                updateCount(viewCount, post.views);
-                updateCount(commentCount, post.comment_count);
-            })
-            .catch(error => console.error('게시글 데이터 로드 오류:', error));
+            // 좋아요수, 조회 수, 댓글 수 업데이트
+            const likeCount = document.getElementById('like-count');
+            const viewCount = document.getElementById('view-count');
+            const commentCount = document.getElementById('comment-count');
+            updateCount(likeCount, post.likes);
+            updateCount(viewCount, post.views);
+            updateCount(commentCount, post.comment_count);
+        })
+        .catch(error => console.error('게시글 데이터 로드 오류:', error));
     }
 
-    // 조회수 업데이트 (IP 기반)
+    // 조회수 업데이트
     const updateViewCount = () => {
         fetch(`${BACKEND_URL}/api/posts/${postId}/view`, {
             method: 'POST',
@@ -200,18 +193,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             }
         })  
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(data => {
-                if (data.liked) {
-                    likeButton.classList.add('enabled');
-                    likeButton.classList.remove('disabled');
-                } else {
-                    likeButton.classList.add('disabled');
-                    likeButton.classList.remove('enabled');
-                }
-                likeCountElement.textContent = data.likeCount;
-            })
-            .catch(err => console.error('좋아요 상태 조회 오류:', err));
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(data => {
+            if (data.liked) {
+                likeButton.classList.add('enabled');
+                likeButton.classList.remove('disabled');
+            } else {
+                likeButton.classList.add('disabled');
+                likeButton.classList.remove('enabled');
+            }
+            likeCountElement.textContent = data.likeCount;
+        })
+        .catch(err => console.error('좋아요 상태 조회 오류:', err));
     };
 
     // 좋아요 버튼 클릭 시
@@ -226,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 헤더 추가
             },
         })
-        .then(response => {
+        .then((response) => {
             if (!response.ok) {
                 throw new Error(`서버 에러 발생: ${response.status}`);
             }
@@ -235,9 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error('좋아요 업데이트 오류:', err));
     });
 
-    // 초기 데이터 로드
-    updateViewCount();
-    fetchLikeStatus();
+    updateViewCount(); // 초기 데이터 로드
+    fetchLikeStatus(); // 초기 데이터 로드
 
     // 서버와 통신하여 댓글 목록 조회
     const fetchComments = () => {
@@ -248,76 +240,72 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(responseData => {
-                const comments = responseData.data;
-                commentContainer.innerHTML = '';
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(responseData => {
+            const comments = responseData.data;
+            commentContainer.innerHTML = '';
                 
-                comments.forEach(comment => {
-                    const commentElement = document.createElement('div');
-                    commentElement.classList.add('comment-container');
-                    commentElement.dataset.commentId = comment.comment_id;
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment-container');
+                commentElement.dataset.commentId = comment.comment_id;
 
-                    const commentBody = document.createElement('div');
-                    commentBody.classList.add('comment-body');
+                const commentBody = document.createElement('div');
+                commentBody.classList.add('comment-body');
 
-                    const commentMetaContent = document.createElement('div');
-                    commentMetaContent.classList.add('comment-meta-content');
+                const commentMetaContent = document.createElement('div');
+                commentMetaContent.classList.add('comment-meta-content');
 
-                    const commentMeta = document.createElement('div');
-                    commentMeta.classList.add('comment-meta');
-                    const commentAuthorPhoto = document.createElement('img');
-                    commentAuthorPhoto.src = `${BACKEND_URL}${comment.profile_image_path}`;   
-                    commentAuthorPhoto.alt = '댓글 작성자 이미지';
-                    commentAuthorPhoto.classList.add('comment-author-photo');
-                    const commentAuthorName = document.createElement('span');
-                    commentAuthorName.classList.add('comment-author-name');
-                    commentAuthorName.textContent = comment.nickname;
-                    const commentDate = document.createElement('span');
-                    commentDate.classList.add('comment-date');
-                    commentDate.textContent = new Date(comment.created_at).toLocaleDateString();
-                    const commentTime = document.createElement('span');
-                    commentTime.classList.add('comment-time');
-                    commentTime.textContent = new Date(comment.created_at).toLocaleTimeString();
+                const commentMeta = document.createElement('div');
+                commentMeta.classList.add('comment-meta');
+                const commentAuthorPhoto = document.createElement('img');
+                commentAuthorPhoto.src = `${BACKEND_URL}${comment.profile_image_path}`;   
+                commentAuthorPhoto.alt = '댓글 작성자 이미지';
+                commentAuthorPhoto.classList.add('comment-author-photo');
+                const commentAuthorName = document.createElement('span');
+                commentAuthorName.classList.add('comment-author-name');
+                commentAuthorName.textContent = comment.nickname;
+                const commentDate = document.createElement('span');
+                commentDate.classList.add('comment-date');                    commentDate.textContent = new Date(comment.created_at).toLocaleDateString();
+                const commentTime = document.createElement('span');
+                commentTime.classList.add('comment-time');
+                commentTime.textContent = new Date(comment.created_at).toLocaleTimeString();
 
-                    commentMeta.appendChild(commentAuthorPhoto);
-                    commentMeta.appendChild(commentAuthorName);
-                    commentMeta.appendChild(commentDate);
-                    commentMeta.appendChild(commentTime);
+                commentMeta.appendChild(commentAuthorPhoto);
+                commentMeta.appendChild(commentAuthorName);
+                commentMeta.appendChild(commentDate);
+                commentMeta.appendChild(commentTime);
 
-                    const commentContent = document.createElement('div');
-                    commentContent.classList.add('comment-content');
-                    const commentText = document.createElement('p');
-                    commentText.textContent = comment.comment_content;
-                    commentContent.appendChild(commentText);
+                const commentContent = document.createElement('div');
+                commentContent.classList.add('comment-content');
+                const commentText = document.createElement('p');
+                commentText.textContent = comment.comment_content;
+                commentContent.appendChild(commentText);
 
-                    commentMetaContent.appendChild(commentMeta);
-                    commentMetaContent.appendChild(commentContent);
+                commentMetaContent.appendChild(commentMeta);
+                commentMetaContent.appendChild(commentContent);
 
-                    const commentActions = document.createElement('div');
-                    commentActions.classList.add('comment-actions');
+                const commentActions = document.createElement('div');
+                commentActions.classList.add('comment-actions');
                     
-                    // 댓글 작성자 ID가 로그인한 유저의 ID와 동일한지 확인
-                    if (comment.user_id === userId) {
-                        const editButton = document.createElement('button');
-                        editButton.classList.add('edit-comment-button');
-                        editButton.textContent = '수정';
-                        const deleteButton = document.createElement('button');
-                        deleteButton.classList.add('delete-comment-button');
-                        deleteButton.textContent = '삭제';
-                        commentActions.appendChild(editButton);
-                        commentActions.appendChild(deleteButton);
-                    }
-                    commentBody.appendChild(commentMetaContent);
-                    commentBody.appendChild(commentActions);
-                    commentElement.appendChild(commentBody);
-                    commentContainer.appendChild(commentElement);
-                });
+                // 댓글 작성자 ID가 로그인한 유저의 ID와 동일한지 확인
+                if (comment.user_id === userId) {
+                    const editButton = document.createElement('button');
+                    editButton.classList.add('edit-comment-button');
+                    editButton.textContent = '수정';
+                    const deleteButton = document.createElement('button');
+                    deleteButton.classList.add('delete-comment-button');
+                    deleteButton.textContent = '삭제';                        commentActions.appendChild(editButton);
+                    commentActions.appendChild(deleteButton);
+                }
+                commentBody.appendChild(commentMetaContent);
+                commentBody.appendChild(commentActions);
+                commentElement.appendChild(commentBody);
+                commentContainer.appendChild(commentElement);                });
             })
-            .catch(error => console.error('댓글 목록 로드 오류:', error));
+        .catch(error => console.error('댓글 목록 로드 오류:', error));
     };
-    // 초기 댓글 목록 (로그인 무관)
-    fetchComments();
+    fetchComments(); // 초기 댓글 목록 (로그인 무관)
 
     // 댓글 등록 버튼 활성화
     commentInput.addEventListener('input', () => {
@@ -330,6 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let isAdding = true; 
     let currentComment = null; 
+
     // 댓글 등록/수정 버튼 클릭 시
     submitCommentButton.addEventListener('click', () => {
         const commentText = commentInput.value.trim();
@@ -346,13 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ commentContent: commentText })
 
                 })
-                    .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-                    .then(() => {
-                        commentInput.value = '';
-                        return fetchComments(); // 댓글 목록 갱신
-                    })
-                    .then(() => fetchPostDetails()) // 댓글 수 갱신
-                    .catch(error => console.error('댓글 등록 오류:', error));
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+                .then(() => {
+                    commentInput.value = '';
+                    return fetchComments(); // 댓글 목록 갱신
+                })
+                .then(() => fetchPostDetails()) // 댓글 수 갱신
+                .catch(error => console.error('댓글 등록 오류:', error));
             } else {
                 // 서버와 통신하여 댓글 수정 
                 fetch(`${BACKEND_URL}/api/posts/${postId}/comments/${currentComment.dataset.commentId}`, {
@@ -363,16 +352,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({ commentContent: commentText })
                 })
-                    .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-                    .then(() => {
-                        commentInput.value = '';
-                        isAdding = true;
-                        submitCommentButton.textContent = '댓글 등록';
-                        currentComment = null;
-                        // 수정 댓글 반영
-                        fetchComments(); 
-                    })
-                    .catch(error => console.error('댓글 수정 오류:', error));
+                .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+                .then(() => {
+                    commentInput.value = '';
+                    isAdding = true;
+                    submitCommentButton.textContent = '댓글 등록';
+                    currentComment = null;
+                   
+                    fetchComments(); // 수정 댓글 반영
+                })
+                .catch(error => console.error('댓글 수정 오류:', error));
             }
         }
     });
@@ -411,6 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 댓글 삭제 모달 확인 클릭
     document.getElementById('comment-confirm-button').addEventListener('click', () => {
         const commentId = deleteCommentModal.dataset.commentId;
+        
         // 서버와 통신하여 댓글 삭제
         fetch(`${BACKEND_URL}/api/posts/${postId}/comments/${commentId}`, {
             method: 'DELETE',
@@ -418,13 +408,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
             }
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(() => {
-                closeModal(deleteCommentModal);
-                return fetchComments(); // 댓글 목록 갱신
-            })
-            .then(() => fetchPostDetails()) // 댓글 수 갱신
-            .catch(error => console.error('댓글 삭제 오류:', error));
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(() => {
+            closeModal(deleteCommentModal);
+            return fetchComments(); // 댓글 목록 갱신
+        })
+        .then(() => fetchPostDetails()) // 댓글 수 갱신
+        .catch(error => console.error('댓글 삭제 오류:', error));
     });
 
     // 조회 수, 댓글 수 표기

@@ -35,12 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return response.json();
     })
-    .then(authData => {
-        userId = authData.data.user_id; // `userId`만 저장
-        profileImagePath = authData.data.profile_image_path;
-        // 프로필 이미지 업데이트
+    .then(({ data: { user_id, profile_image_path } }) => { 
+        userId = user_id;
+        profileImagePath = profile_image_path;
         if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // 프로필 이미지 업데이트
         }
         initializeUserInfo(); // 로그인 상태 확인 후 유저 정보 초기화
     })
@@ -59,22 +58,20 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         })
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-        .then((data) => {
-            if (data.data.email) emailArea.textContent = data.data.email;
-            if (data.data.profile_image_path) currentProfilePhoto.src = `${BACKEND_URL}${data.data.profile_image_path}`;
-            if (data.data.nickname) nicknameInput.value = data.data.nickname;
+        .then(({ data }) => {
+            if (data.email) emailArea.textContent = data.email;
+            if (data.profile_image_path) currentProfilePhoto.src = `${BACKEND_URL}${data.profile_image_path}`;
+            if (data.nickname) nicknameInput.value = data.nickname;
         })
         .catch(error => console.error('유저 정보 조회 실패:', error));
     }
     
     // 프로필 이미지 클릭 시
-    profileImg.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('show');
-    });
+    profileImg.addEventListener('click', () => dropdownMenu.classList.toggle('show'));  
 
     // 드롭 다운 메뉴 항목 클릭 시
     dropdownMenu.addEventListener('click', (event) => {
-        const target = event.target;
+        const { target } = event;
         if (target.tagName === 'A') {
             event.preventDefault(); 
     
@@ -91,32 +88,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let originalProfilePhotoSrc = currentProfilePhoto.src; 
 
     // 프로필 사진 변경 클릭 시
-    profilePhotoInput.addEventListener('change', (event) => {    
-        if (event.target.files.length > 0) {
-            // 프로필 사진이 업로드 된 경우
-            const file = event.target.files[0]; 
+    profilePhotoInput.addEventListener('change', ({ target: { files } }) => {    
+        if (files.length > 0) { // 프로필 사진이 업로드 된 경우
+            const file = files[0]; 
             const reader = new FileReader();
 
             reader.onload = function (e) {
-                // 업로드된 사진 미리보기
-                currentProfilePhoto.src = e.target.result; 
+                currentProfilePhoto.src = e.target.result; // 업로드된 사진 미리보기
             };
         
             reader.readAsDataURL(file);
         } else {
-            // 파일 선택이 취소된 경우, 원래 프로필 사진 복원
-            currentProfilePhoto.src = originalProfilePhotoSrc;
-            // 선택된 파일이 있다면 그것도 삭제
-            profilePhotoInput.value = ''; 
+            currentProfilePhoto.src = originalProfilePhotoSrc; // 파일 선택이 취소된 경우, 원래 프로필 사진 복원
+            profilePhotoInput.value = ''; // 선택된 파일이 있다면 그것도 삭제
         }
     });
 
     // 수정하기 버튼 클릭 시
     editButton.addEventListener('click', () => {
         const nickname = nicknameInput.value.trim();
-        
-        // 닉네임 유효성 검사
-        if (!nickname) {
+        if (!nickname) { // 닉네임 유효성 검사
             helperText.textContent = '*닉네임을 입력해주세요.';
             helperText.style.display = 'block';
             return;
@@ -131,20 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                 },
             })
-                .then((response) => {
-                    if (response.status === 409) {
-                        helperText.textContent = '*중복된 닉네임입니다.';
-                        helperText.style.display = 'block';
-                        return;
-                    } else if (response.status === 200) {
-                        helperText.textContent = '';
-                        helperText.style.display = 'none';
-                        return;
-                    } else {
-                        return Promise.reject(`서버 에러 발생: ${response.status}`);
-                    }   
-                })
-                .catch((error) => console.error('닉네임 중복 체크 실패:', error));
+            .then((response) => {
+                if (response.status === 409) {
+                    helperText.textContent = '*중복된 닉네임입니다.';
+                    helperText.style.display = 'block';
+                    return;
+                } else if (response.status === 200) {
+                    helperText.textContent = '';
+                    helperText.style.display = 'none';
+                    return;
+                } else {
+                    return Promise.reject(`서버 에러 발생: ${response.status}`);
+                }   
+            })
+            .catch((error) => console.error('닉네임 중복 체크 실패:', error));
         }
     });
 
@@ -198,20 +189,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             },
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then((data) => {
-                showToast('수정 완료!');
-                if (data.profile_image_path) {
-                    // 새 프로필 사진 업로드
-                    currentProfilePhoto.src = data.profile_image_path;
-                }
-
-                // 수정 완료 후 게시글 페이지로 이동
-                setTimeout(() => {
-                    window.location.href = '/posts'; // 게시글 페이지 경로로 리다이렉트
-                }, 1500); // 토스트 메시지가 표시된 후 약간의 딜레이
-            })
-            .catch((error) => console.error('회원정보 수정 실패:', error));
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(({ profile_image_path }) => {
+            showToast('수정 완료!');
+            if (profile_image_path) {
+                currentProfilePhoto.src = profile_image_path; // 새 프로필 사진 업로드
+            }
+            setTimeout(() => {
+                window.location.href = '/posts'; // 게시글 페이지 경로로 리다이렉트
+            }, 1500); // 토스트 메시지가 표시된 후 약간의 딜레이
+        })
+        .catch((error) => console.error('회원정보 수정 실패:', error));
     });
 
     // 토스트 메시지

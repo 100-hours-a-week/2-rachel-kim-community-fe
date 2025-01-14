@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const signupLink = document.getElementById('sign-up-link');
     const helperText = document.getElementById('helper-text');
 
+    let isEmailValid = false;
+    let isPasswordValid = false;
+
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
         method: 'GET',
@@ -23,12 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 로그인되지 않은 상태, 로그인 페이지 유지
     });
 
-    let isEmailValid = false;
-    let isPasswordValid = false;
-
     // 이메일 유효성 검사
-    emailInput.addEventListener('input', (event) => {
-        const email = event.target.value.trim();
+    emailInput.addEventListener('input', ({ target: { value } }) => {
+        const email = value.trim();
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         
         if (!email) {
@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 비밀번호 유효성 검사
-    passwordInput.addEventListener('input', (event) => {
-        const password = event.target.value;
+    passwordInput.addEventListener('input', ({ target: { value } }) => {
+        const password = value;
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/;
         
         if (!password) {
@@ -72,8 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loginButton.addEventListener('click', (event) => {
         event.preventDefault();  
 
-        // 기존 토큰 삭제
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('authToken'); // 기존 토큰 삭제
 
         // 서버와 통신하여 로그인(이메일, 비밀번호)
         if (isEmailValid && isPasswordValid) {
@@ -86,20 +85,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ email, password })
             })
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(data => {
-                if (data.data && data.data.auth_token) {
-                    // 새 JWT 저장
-                    localStorage.setItem('authToken', data.data.auth_token);                    
+            .then(({ data }) => {
+                if (data?.auth_token) {
+                    localStorage.setItem('authToken', data.auth_token);  // 새 JWT 저장                
                     window.location.href = '/posts';
                 } else {
-                    // 로그인 실패 시 
-                    helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';
+                    helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';  // 로그인 실패 시 
                     helperText.style.display = 'block';
                 }
             })
-            .catch(error => {
-                console.error('로그인 오류:', error);
-            })
+            .catch((error) => console.error('로그인 오류:', error));
         }
     });
 
@@ -110,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 로그인 버튼 활성화
-    function updateLoginButtonState() {
+    const updateLoginButtonState = () => {
         if (isEmailValid && isPasswordValid) {
             loginButton.disabled = false;
             loginButton.classList.add('active');
@@ -118,6 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             loginButton.disabled = true;
             loginButton.classList.remove('active');  
         }
-    }
+    };
 });
 

@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(response => {
+    .then((response) => {
         if (response.status === 403) {
             localStorage.removeItem('authToken');
             window.location.href = '/login';
@@ -30,20 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return response.json();
     })
-    .then(authData => {
-        userId = authData.data.user_id;
+    .then(({ data: { user_id, profile_image_path } }) => {
+        userId = user_id;
         if (!userId) {
-            console.error('userId가 응답에 없습니다:', authData);
-        }
-        if (!authData.data?.user_id) {
             console.error('로그인된 사용자 정보가 없습니다.');
             window.location.href = '/posts';
         } 
-        
-        profileImagePath = authData.data.profile_image_path;
-        // 프로필 이미지 업데이트
+
+        profileImagePath = profile_image_path;
         if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // 프로필 이미지 업데이트
         }
     })
     .catch(() => {
@@ -57,13 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 프로필 이미지 클릭 시
-    profileImg.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('show');
-    });
+    profileImg.addEventListener('click', () => dropdownMenu.classList.toggle('show'));
 
     // 드롭 다운 메뉴 항목 클릭 시
     dropdownMenu.addEventListener('click', (event) => {
-        const target = event.target;
+        const { target } = event;
         if (target.tagName === 'A') {
             event.preventDefault(); 
     
@@ -80,22 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 제목 입력 시 
     titleInput.addEventListener('input', () => {
-        // 제목 글자 수 제한
-        if (titleInput.value.length > 26) {
+        if (titleInput.value.length > 26) { // 제목 글자 수 제한
             titleInput.value = titleInput.value.slice(0, 26);
         }
         updateSubmitButtonState();
     });
 
     // 내용 입력 시 
-    contentInput.addEventListener('input', () => {
-        updateSubmitButtonState();
-    });
+    contentInput.addEventListener('input', () => updateSubmitButtonState());
 
     // 파일 선택 시
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0]; 
-        fileNameElement.textContent = file ? file.name : '파일을 선택해주세요.';
+    fileInput.addEventListener('change', ({ target: { files } }) => {
+        fileNameElement.textContent = files ? files.name : '파일을 선택해주세요.';
     });
 
     // 완료 버튼 클릭 시
@@ -121,11 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // JWT 토큰
             },
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(() => {
-                window.location.href = '/posts';
-            })
-            .catch(error => console.error('게시글 작성 실패:', error.message));
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(() => {
+            window.location.href = '/posts';
+        })
+        .catch(error => console.error('게시글 작성 실패:', error.message));
     });
 
     // 유효성 검사 상태 (실질적 유효성, 복잡성 감소)

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
         },
     })
-    .then(response => {
+    .then((response) => {
         if (response.status === 403) {
             localStorage.removeItem('authToken');
             window.location.href = '/login';
@@ -31,16 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return response.json();
     })
-    .then(authData => {
-        if (!authData.data?.user_id) {
+    .then(({ data: { user_id, profile_image_path } }) => { 
+        if (!user_id) {
             console.error('로그인된 사용자 정보가 없습니다.');
             window.location.href = '/posts';
         }
-        userId = authData.data.user_id; // 로그인된 사용자 ID 저장
-        profileImagePath = authData.data.profile_image_path;
-        // 프로필 이미지 업데이트
+        userId = user_id; // 로그인된 사용자 ID 저장
+        profileImagePath = profile_image_path;
         if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`;
+            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // // 프로필 이미지 업데이트
         }
     })
     .catch(() => {
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 드롭 다운 메뉴 항목 클릭 시
     dropdownMenu.addEventListener('click', (event) => {
-        const target = event.target;
+        const { target } = event;
         if (target.tagName === 'A') {
             event.preventDefault(); 
     
@@ -80,9 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'GET'
     })
     .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-    .then(data => {
-        const post = data.data;
-
+    .then(({ data: post }) => {
         titleInput.value = post.post_title;
         contentInput.value = post.post_content;
         fileNameElement.textContent = post.post_image_path ? post.post_image_path.split('/').pop() : '파일을 선택해주세요.';
@@ -93,17 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 제목 입력 시 
     titleInput.addEventListener('input', () => {
-        // 제목 글자 수 제한
-        if (titleInput.value.length > 26) {
+        if (titleInput.value.length > 26) { // 제목 글자 수 제한
             titleInput.value = titleInput.value.slice(0, 26);
         }
     });
 
     // 파일 선택 시
-    fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0]; 
-        fileNameElement.textContent = file ? file.name : '파일을 선택해주세요.';
-    });
+    fileInput.addEventListener('change', ({ target: { files } }) => {
+        fileNameElement.textContent = files[0] ? files[0].name : '파일을 선택해주세요.';
+    }); 
 
     // 수정하기 버튼 클릭 시
     editButton.addEventListener('click', () => {
@@ -137,20 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`, // JWT 토큰
             },
         })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(data => {
-                const post = data.data;
-
-                // 제목과 내용을 입력 필드에 설정
-                titleInput.value = post.post_title;
-                contentInput.value = post.post_content;
-
-                // 이미지 파일명 표시
-                fileNameElement.textContent = post.original_file_name || '파일을 선택해주세요.';  
-                window.location.href = `/posts/${postId}`;
-            })
-            .catch(error => {
-                console.error('게시글 수정 실패:', error.message);
-            });
+        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+        .then(({ data: post }) => {
+            titleInput.value = post.post_title; // 제목과 내용을 입력 필드에 설정
+            contentInput.value = post.post_content;
+            fileNameElement.textContent = post.original_file_name || '파일을 선택해주세요.';  // 이미지 파일명 표시
+            window.location.href = `/posts/${postId}`;
+        })
+        .catch(error => {
+            console.error('게시글 수정 실패:', error.message);
+        });
     });
 });

@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginLink = document.getElementById('login-link');
     const backArrow = document.getElementById('back-arrow');
     
+    let isProfilePhotoUploaded = false;
+    let isEmailValid = false;
+    let isPasswordValid = false;
+    let isConfirmPasswordValid = false;
+    let isNicknameValid = false;
+
     // 서버와 통신하여 로그인 상태 확인
     fetch(`${BACKEND_URL}/api/users/auth/check`, {
         method: 'GET',
@@ -25,36 +31,23 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(() => {
         // 로그인되지 않은 상태, 회원가입 페이지 유지
     });
-    
-    let isProfilePhotoUploaded = false;
-    let isEmailValid = false;
-    let isPasswordValid = false;
-    let isConfirmPasswordValid = false;
-    let isNicknameValid = false;
 
     // 프로필 사진 업로드 
-    profilePhotoInput.addEventListener('change', (event) => {
+    profilePhotoInput.addEventListener('change', ({ target: { files } }) => {
         const label = document.getElementById('profile-photo-label');
-    
-        if (event.target.files.length > 0) {
-            // 프로필 사진이 업로드 된 경우
+        if (files.length > 0) { // 프로필 사진이 업로드 된 경우
             clearHelperText(profilePhotoInput);
             isProfilePhotoUploaded = true;
-            const file = event.target.files[0]; 
             const reader = new FileReader();
-            
-            reader.onload = function (e) {
-                // 이미지 업로드 후 라벨 내에 이미지 표시
+            reader.onload = (e) => { // 이미지 업로드 후 라벨 내에 이미지 표시
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.classList.add('profile-photo-preview'); 
                 label.innerHTML = ''; 
                 label.appendChild(img);
             };
-        
-            reader.readAsDataURL(file);
-        } else {
-            // 프로필 사진을 선택하지 않거나 선택을 취소한 경우
+            reader.readAsDataURL(files[0]);
+        } else { // 프로필 사진을 선택하지 않거나 선택을 취소한 경우
             isProfilePhotoUploaded = false;
             label.innerHTML = ''; 
             const plusIcon = document.createElement('span'); 
@@ -62,19 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
             plusIcon.textContent = '+'; 
             label.appendChild(plusIcon); 
             setHelperText(profilePhotoInput, '*프로필 사진을 추가해주세요.');
-            
-            // 선택된 파일이 있다면 그것도 삭제
-            profilePhotoInput.value = ''; 
+            profilePhotoInput.value = ''; // 선택된 파일이 있다면 그것도 삭제
         }
         updateSignupButtonState();
     });
     
-
     // 이메일 유효성 검사
-    emailInput.addEventListener('blur', (event) => {
+    emailInput.addEventListener('blur', ({ target: { value } }) => {
         const email = event.target.value.trim();
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
         if (!email) {
             setHelperText(emailInput, '*이메일을 입력해주세요.');
             isEmailValid = false;
@@ -86,27 +75,19 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`${BACKEND_URL}/api/users/email/check?email=${encodeURIComponent(email)}`, {
                 method: 'GET',
             })
-                .then(response => {
-                    if (response.status === 409) {
-                        // 중복된 이메일 처리
-                        isEmailValid = false;
-                        setHelperText(emailInput, '*중복된 이메일입니다.');
-                        return;
-                    } else if (response.status === 200) {
-                        // 사용 가능한 이메일 처리
-                        isEmailValid = true;
-                        clearHelperText(emailInput);
-                        return;
-                    } else {
-                        return Promise.reject(`서버 에러 발생: ${response.status}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('이메일 중복 체크 실패:', error);
-                })
-                .finally(() => {
-                    updateSignupButtonState();
-                });
+            .then((response) => {
+                if (response.status === 409) { // 중복된 이메일 처리
+                    isEmailValid = false;
+                    setHelperText(emailInput, '*중복된 이메일입니다.');
+                } else if (response.status === 200) { // 사용 가능한 이메일 처리
+                    isEmailValid = true;
+                    clearHelperText(emailInput);
+                } else {
+                    return Promise.reject(`서버 에러 발생: ${response.status}`);
+                }
+            })
+            .catch((error) => console.error('이메일 중복 체크 실패:', error))
+            .finally(() => updateSignupButtonState());
         }
     });
 
@@ -163,32 +144,31 @@ document.addEventListener('DOMContentLoaded', () => {
             fetch(`${BACKEND_URL}/api/users/nickname/check/signup?nickname=${encodeURIComponent(nickname)}`, {
                 method: 'GET',
             })
-                .then(response => {
-                    if (response.status === 409) {
-                        isNicknameValid = false;
-                        setHelperText(nicknameInput, '*중복된 닉네임입니다.');
+            .then(response => {
+                if (response.status === 409) {
+                    isNicknameValid = false;
+                    setHelperText(nicknameInput, '*중복된 닉네임입니다.');
                         return;
-                    } else if (response.status === 200) {
-                        isNicknameValid = true;
-                        clearHelperText(nicknameInput);
-                        return;
-                    } else {
-                        return Promise.reject(`서버 에러 발생: ${response.status}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('닉네임 중복 체크 실패:', error);
-                })
-                .finally(() => {
-                    updateSignupButtonState();
-                });
+                } else if (response.status === 200) {
+                    isNicknameValid = true;
+                    clearHelperText(nicknameInput);
+                    return;
+                } else {
+                    return Promise.reject(`서버 에러 발생: ${response.status}`);
+                }
+            })
+            .catch(error => {
+                console.error('닉네임 중복 체크 실패:', error);
+            })
+            .finally(() => {
+                updateSignupButtonState();
+            });
         }
     });
 
     // 회원가입 버튼 클릭 시
     signupButton.addEventListener('click', (event) => {
         event.preventDefault();
-
         if (isProfilePhotoUploaded && isEmailValid && isPasswordValid && isConfirmPasswordValid && isNicknameValid) {
             // 서버와 통신하여 회원가입(프로필 사진, 이메일, 비밀번호, 닉네임) 
             const formData = new FormData();
@@ -196,27 +176,22 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('email', emailInput.value.trim());
             formData.append('password', passwordInput.value);
             formData.append('nickname', nicknameInput.value.trim());
-            
             fetch(`${BACKEND_URL}/api/users/signup`, {
                 method: 'POST', 
                 body: formData 
             })
-                .then(response => {
-                    if (response.status === 201) {
-                        // 회원가입 성공
-                        window.location.href = '/login'; 
-                    }
-                    // 에러 메시지 처리
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && data.message) {
-                        console.error('회원가입 실패:', data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('회원가입 요청 실패:', error);
-                });
+            .then((response) => {
+                if (response.status === 201) { // 회원가입 성공
+                    window.location.href = '/login'; 
+                }
+                return response.json(); // 에러 메시지 처리
+            })
+            .then(data => {
+                if (data && data.message) {
+                    console.error('회원가입 실패:', data.message);
+                }
+            })
+            .catch(error => console.error('회원가입 요청 실패:', error));
         }
     });
 
@@ -232,18 +207,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 유효성 검사 상태에 따라 회원가입 버튼 활성화
-    function updateSignupButtonState() {
+    const updateSignupButtonState = () => {
         if (isProfilePhotoUploaded && isEmailValid && isPasswordValid && isConfirmPasswordValid && isNicknameValid) {
             signupButton.disabled = false;
             signupButton.classList.add('active');  
-        } 
-        else {
+        } else {
             signupButton.disabled = true;
             signupButton.classList.remove('active');  
         }
-    }
+    };
 
-    /// 헬퍼 텍스트 설정 함수
+    // 헬퍼 텍스트 설정 함수
     function setHelperText(inputElement, message) {
         const container = inputElement.closest('.input-area') || inputElement.closest('.profile-photo-container');
         const helperText = container.querySelector('.helper-text');
@@ -262,5 +236,4 @@ document.addEventListener('DOMContentLoaded', () => {
             helperText.style.display = 'none'; 
         }
     }
-    
 });
