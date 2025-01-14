@@ -72,10 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             // 받은 데이터로 게시글 목록 동적 생성
             const postList = document.getElementById('post-list'); 
-            console.log('프론트엔드에서 받은 응답:', data);
             data.data.forEach(post => {
-                console.log('현재 포스트 데이터:', post);
-
                 // 각 게시글 요소 생성
                 const postElement = document.createElement('div');
                 postElement.classList.add('post');
@@ -131,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 postMeta.appendChild(rightGroup);
 
                 // 작성자 정보
-                console.log('이미지 경로:', `${BACKEND_URL}${post.profile_image_path}`);
                 const authorInfo = document.createElement('div');
                 authorInfo.classList.add('author-info');
                 const authorPhoto = document.createElement('img');
@@ -180,8 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 좋이요 수, 댓글 수, 조회 수 표기
     const updateCount = (element, label, count) => {
-        console.log(`updateCount 호출: label=${label}, count=${count}`);
-
         let formattedCount;
         if (count >= 100000) {
             formattedCount = (count / 1000).toFixed(0) + 'k';
@@ -192,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             formattedCount = count;
         }
-        console.log(`formattedCount: ${formattedCount}`)
         element.textContent = `${label} ${formattedCount}`;
     }
 });

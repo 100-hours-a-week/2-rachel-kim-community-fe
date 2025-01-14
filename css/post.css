@@ -248,6 +248,20 @@
     background-color: #d7d5d5;
 }
 
+#like-button.disabled {
+    background-color: #D9D9D9;
+    color: #000;
+}
+
+#like-button.enabled {
+    background-color: #ACA0EB;
+    color: #fff;
+}
+
+#like-button.enabled span {
+    background-color: #ACA0EB;
+}
+
 #comment-separator {
     width: 100%;
     border: none;             

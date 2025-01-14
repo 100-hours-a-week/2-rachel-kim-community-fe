@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loginButton.addEventListener('click', (event) => {
         event.preventDefault();  
 
+        // 기존 토큰 삭제
+        localStorage.removeItem('authToken');
+
         // 서버와 통신하여 로그인(이메일, 비밀번호)
         if (isEmailValid && isPasswordValid) {
             const email = emailInput.value.trim();
@@ -85,13 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then(data => {
                 if (data.data && data.data.auth_token) {
-                    // 로그인 성공 시 
-                    console.log('로그인 응답 데이터:', data);
-
-                    localStorage.setItem('authToken', data.data.auth_token);
-                    
-                    console.log('저장된 authToken:', localStorage.getItem('authToken'));
-                    
+                    // 새 JWT 저장
+                    localStorage.setItem('authToken', data.data.auth_token);                    
                     window.location.href = '/posts';
                 } else {
                     // 로그인 실패 시 

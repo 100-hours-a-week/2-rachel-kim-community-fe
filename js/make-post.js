@@ -38,9 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!authData.data?.user_id) {
             console.error('로그인된 사용자 정보가 없습니다.');
             window.location.href = '/posts';
-        } else {
-            console.log('로그인 확인 응답 데이터:', authData);
-        }
+        } 
         
         profileImagePath = authData.data.profile_image_path;
         // 프로필 이미지 업데이트
@@ -115,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (fileInput.files[0]) {
             formData.append('attachFilePath', fileInput.files[0]);
         }
-        console.log('보내는 데이터:', Array.from(formData.entries())); // 요청 데이터 확인
 
         fetch(`${BACKEND_URL}/api/posts/new`, {
             method: 'POST',

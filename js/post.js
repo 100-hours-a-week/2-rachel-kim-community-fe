@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const deletePostModal = document.getElementById('delete-post-modal');
     const postCancelButton = document.getElementById('post-cancel-button');
     const postConfirmButton = document.getElementById('post-confirm-button');
+    const likeButton = document.getElementById('like-button');
+    const likeCountElement = document.getElementById('like-count');
+    const viewCountElement = document.getElementById('view-count');
     const commentInput = document.getElementById('comment-input');
     const submitCommentButton = document.getElementById('submit-comment-button');
     const commentContainer = document.querySelector('.comment-container');
@@ -15,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const commentCancelButton = document.getElementById('comment-cancel-button');
     const urlSegments = window.location.pathname.split('/');
     const postId = urlSegments[urlSegments.length - 1];
-    
+    const userIp = localStorage.getItem('userIp');
+
     let userId = null;
     let profileImagePath = null;
 
@@ -40,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         userId = authData.data.user_id;
         if (!userId) {
             console.error('userId가 응답에 없습니다:', authData);
-        } else {
-            console.log('로그인된 사용자 ID:', userId);
         }
 
         profileImagePath = authData.data.profile_image_path;
@@ -166,6 +168,67 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('게시글 데이터 로드 오류:', error));
     }
 
+    // 조회수 업데이트 (IP 기반)
+    const updateViewCount = () => {
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                const currentIp = data.ip;
+                if (userIp !== currentIp) {
+                    localStorage.setItem('userIp', currentIp);
+                    return fetch(`${BACKEND_URL}/api/posts/${postId}/view`, { method: 'POST' });
+                }
+            })
+            .catch(err => console.error('조회수 업데이트 오류:', err));
+    };
+
+    // 서버와 통신하여 좋아요 상태 조회
+    const fetchLikeStatus = () => {
+        fetch(`${BACKEND_URL}/api/posts/${postId}/like-status`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            }
+        })  
+            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
+            .then(data => {
+                if (data.liked) {
+                    likeButton.classList.add('enabled');
+                    likeButton.classList.remove('disabled');
+                } else {
+                    likeButton.classList.add('disabled');
+                    likeButton.classList.remove('enabled');
+                }
+                likeCountElement.textContent = data.likeCount;
+            })
+            .catch(err => console.error('좋아요 상태 조회 오류:', err));
+    };
+
+    // 좋아요 버튼 클릭 시
+    likeButton.addEventListener('click', () => {
+        const isLiked = likeButton.classList.contains('enabled');
+        const url = `${BACKEND_URL}/api/posts/${postId}/like`;
+        const method = isLiked ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 인증 헤더 추가
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`서버 에러 발생: ${response.status}`);
+            }
+            return fetchLikeStatus(); // 좋아요 상태 갱신
+        })
+        .catch(err => console.error('좋아요 업데이트 오류:', err));
+    });
+
+    // 초기 데이터 로드
+    updateViewCount();
+    fetchLikeStatus();
+
     // 서버와 통신하여 댓글 목록 조회
     const fetchComments = () => {
         commentContainer.innerHTML = ''; 
@@ -178,12 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then(responseData => {
                 const comments = responseData.data;
-                console.log("서버에서 가져온 댓글 데이터:", comments);
                 commentContainer.innerHTML = '';
                 
                 comments.forEach(comment => {
-                    console.log("댓글의 user_id:", comment.user_id);
-
                     const commentElement = document.createElement('div');
                     commentElement.classList.add('comment-container');
                     commentElement.dataset.commentId = comment.comment_id;
@@ -238,8 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         commentActions.appendChild(editButton);
                         commentActions.appendChild(deleteButton);
                     }
-                    // 디버깅
-                    console.log("댓글 사용 userId: ", userId);
                     commentBody.appendChild(commentMetaContent);
                     commentBody.appendChild(commentActions);
                     commentElement.appendChild(commentBody);
@@ -268,8 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (commentText) {
             if (isAdding) {
-                // 디버깅
-                console.log('보내는 댓글 데이터:', { commentContent: commentText });
                 // 서버와 통신하여 댓글 등록 
                 fetch(`${BACKEND_URL}/api/posts/${postId}/comments`, {
                     method: 'POST',
