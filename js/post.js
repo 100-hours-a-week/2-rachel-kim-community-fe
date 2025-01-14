@@ -343,9 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
                     .then(() => {
                         commentInput.value = '';
-                        // 등록 댓글 반영
-                        fetchComments(); 
+                        return fetchComments(); // 댓글 목록 갱신
                     })
+                    .then(() => fetchPostDetails()) // 댓글 수 갱신
                     .catch(error => console.error('댓글 등록 오류:', error));
             } else {
                 // 서버와 통신하여 댓글 수정 
@@ -415,9 +415,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
             .then(() => {
                 closeModal(deleteCommentModal);
-                // 삭제 댓글 반영
-                fetchComments(); 
+                return fetchComments(); // 댓글 목록 갱신
             })
+            .then(() => fetchPostDetails()) // 댓글 수 갱신
             .catch(error => console.error('댓글 삭제 오류:', error));
     });
 
