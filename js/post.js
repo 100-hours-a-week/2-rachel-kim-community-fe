@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const commentCancelButton = document.getElementById('comment-cancel-button');
     const urlSegments = window.location.pathname.split('/');
     const postId = urlSegments[urlSegments.length - 1];
-    const userIp = localStorage.getItem('userIp');
 
     let userId = null;
     let profileImagePath = null;
@@ -170,16 +169,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 조회수 업데이트 (IP 기반)
     const updateViewCount = () => {
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => {
-                const currentIp = data.ip;
-                if (userIp !== currentIp) {
-                    localStorage.setItem('userIp', currentIp);
-                    return fetch(`${BACKEND_URL}/api/posts/${postId}/view`, { method: 'POST' });
-                }
-            })
-            .catch(err => console.error('조회수 업데이트 오류:', err));
+        fetch(`${BACKEND_URL}/api/posts/${postId}/view`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('조회수 업데이트 성공');
+                fetchPostDetails(); // 조회수 갱신
+            } else {
+                console.error('조회수 업데이트 실패:', response.status);
+            }
+        })
+        .catch(err => console.error('조회수 업데이트 오류:', err));
     };
 
     // 서버와 통신하여 좋아요 상태 조회
