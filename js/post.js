@@ -148,7 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 postDate.textContent = new Date(post.created_at).toLocaleDateString(); 
                 postTime.textContent = new Date(post.created_at).toLocaleTimeString(); 
                 postContent.textContent = post.post_content;
-                postImage.src = `${BACKEND_URL}${post.post_image_path}`; 
+                // 이미지 경로가 없으면 이미지 숨김 처리
+                if (!post.post_image_path) {
+                    postImage.style.display = 'none'; // 이미지 숨김
+                } else {
+                    postImage.style.display = 'block'; // 이미지 표시
+                    postImage.src = `${BACKEND_URL}${post.post_image_path}`;
+                }
 
                 // 게시글 작성자와 로그인 사용자가 다르면 수정/삭제 버튼 숨기기
                 if (post.user_id !== userId) {
