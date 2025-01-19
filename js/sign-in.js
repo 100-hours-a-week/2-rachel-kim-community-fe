@@ -17,11 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let isNicknameValid = false;
 
     // 서버와 통신하여 로그인 상태 확인
-    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+    fetch(`${BACKEND_URL}/api/users/auth/status`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        },
+        credentials: 'include', // 쿠키 포함
     })
     .then(response => {
         if (response.ok) {
@@ -178,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('nickname', nicknameInput.value.trim());
             fetch(`${BACKEND_URL}/api/users/signup`, {
                 method: 'POST', 
-                body: formData 
+                body: formData, 
             })
             .then((response) => {
                 if (response.status === 201) { // 회원가입 성공

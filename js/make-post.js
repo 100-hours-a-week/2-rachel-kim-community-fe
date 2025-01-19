@@ -12,38 +12,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const helperText = document.getElementById('helper-text');
 
     let userId = null;
-    let profileImagePath = null;
 
-    // 서버와 통신하여 로그인 상태 확인
-    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+    // 서버와 통신하여 인증된 사용자 확인
+    fetch(`${BACKEND_URL}/api/users/protected`, {
         method: "GET",
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        },
+        credentials: 'include', // 세션 쿠키 포함
     })
     .then((response) => {
-        if (response.status === 403) {
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-        } else if (!response.ok) {
-            throw new Error('인증 실패');
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('인증되지 않은 사용자입니다.');
         }
-        return response.json();
     })
-    .then(({ data: { user_id, profile_image_path } }) => {
-        userId = user_id;
-        if (!userId) {
-            console.error('로그인된 사용자 정보가 없습니다.');
-            window.location.href = '/posts';
-        } 
-
-        profileImagePath = profile_image_path;
-        if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // 프로필 이미지 업데이트
+    .then(({ user }) => {
+        userId = user.user_id;
+        if (user.profile_image_path) {
+            profileImg.src = `${BACKEND_URL}${user.profile_image_path}`;
         }
     })
     .catch(() => {
-        console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.')
+        console.error('사용자 인증 실패. 로그인 페이지로 이동합니다.');
         window.location.href = '/login';
     });
     
@@ -66,8 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (target.id === 'password-link') {
                 window.location.href = `/users/${userId}/password`;  
             } else if (target.id === 'logout-link') {
-                localStorage.removeItem('authToken'); // JWT 토큰 삭제
-                window.location.href = '/login';  
+                // 서버와 통신하여 로그아웃
+                fetch(`${BACKEND_URL}/api/users/logout`, {
+                    method: 'POST',
+                    credentials: 'include', // 세션 쿠키 포함
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/login'; // 로그아웃 성공 후 리다이렉트
+                    }
+                })
+                .catch(error => console.error(`로그아웃 실패: ${error}`));
             }
         }
     });
@@ -107,9 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`${BACKEND_URL}/api/posts/new`, {
             method: 'POST',
             body: formData, 
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // JWT 토큰
-            },
+            credentials: 'include', // 쿠키 포함
         })
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
         .then(() => {

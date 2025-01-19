@@ -17,54 +17,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('toast');
     
     let userId = null;
-    let profileImagePath = null;
 
-    // 서버와 통신하여 로그인 상태 확인
-    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+    // 서버와 통신하여 인증된 사용자 확인
+    fetch(`${BACKEND_URL}/api/users/protected`, {
         method: "GET",
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        },
+        credentials: "include", // 세션 쿠키 포함
     })
     .then(response => {
-        if (response.status === 403) {
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-        } else if (!response.ok) {
-            throw new Error('인증 실패');
+        if (response.ok) {
+            return response.json(); // 인증된 사용자 정보 반환
+        } else {
+            throw new Error('인증되지 않은 사용자입니다.');
         }
-        return response.json();
     })
-    .then(({ data: { user_id, profile_image_path } }) => { 
-        userId = user_id;
-        profileImagePath = profile_image_path;
-        if (profileImagePath) {
-            profileImg.src = `${BACKEND_URL}${profileImagePath}`; // 프로필 이미지 업데이트
+    .then(({ user }) => {
+        userId = user.user_id;
+        if (user.profile_image_path) {
+            const fullPath = `${BACKEND_URL}${user.profile_image_path}`;
+            profileImg.src = fullPath; // 네비게이션 바 프로필 이미지
+            currentProfilePhoto.src = fullPath; // 초기 프로필 사진 설정
         }
-        initializeUserInfo(); // 로그인 상태 확인 후 유저 정보 초기화
+        if (user.email) {
+            emailArea.textContent = user.email;
+        }
+        if (user.nickname) {
+            nicknameInput.value = user.nickname;
+        }
+        console.log('초기 데이터 로드:', {
+            profileImg: profileImg.src,
+            currentProfilePhoto: currentProfilePhoto.src,
+            user,
+        }); // 디버깅 로그
     })
-    .catch(() => {
-        console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
-        window.location.href = '/login'; // 로그인되지 않은 경우 리다이렉트
+    .catch(error => {
+        console.error('사용자 인증 실패:', error.message);
+        window.location.href = '/login'; // 인증 실패 시 로그인 페이지로 리다이렉트
     });
-
-    // 유저 정보 초기화
-    function initializeUserInfo() {
-        // 서버와 통신하여 유저 정보 조회
-        fetch(`${BACKEND_URL}/api/users/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-            },
-        })
-        .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-        .then(({ data }) => {
-            if (data.email) emailArea.textContent = data.email;
-            if (data.profile_image_path) currentProfilePhoto.src = `${BACKEND_URL}${data.profile_image_path}`;
-            if (data.nickname) nicknameInput.value = data.nickname;
-        })
-        .catch(error => console.error('유저 정보 조회 실패:', error));
-    }
     
     // 프로필 이미지 클릭 시
     profileImg.addEventListener('click', () => dropdownMenu.classList.toggle('show'));  
@@ -80,7 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (target.id === 'password-link') {
                 window.location.href = `/users/${userId}/password`;  
             } else if (target.id === 'logout-link') {
-                window.location.href = '/login';  
+                // 서버와 통신하여 로그아웃
+                fetch(`${BACKEND_URL}/api/users/logout`, {
+                    method: 'POST',
+                    credentials: 'include', // 세션 쿠키 포함
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/login'; // 로그아웃 성공 후 리다이렉트
+                    }
+                })
+                .catch(error => console.error(`로그아웃 실패: ${error}`));
             }
         }
     });
@@ -118,9 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // 서버와 통신하여 닉네임 중복 체크
             fetch(`${BACKEND_URL}/api/users/nickname/check/update?nickname=${encodeURIComponent(nickname)}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                },
+                credentials: 'include', // 쿠키 포함
             })
             .then((response) => {
                 if (response.status === 409) {
@@ -160,9 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 서버와 통신하여 회원정보 삭제
         fetch(`${BACKEND_URL}/api/users/${userId}`, {
             method: 'DELETE',
-            headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-            },
+            credentials: 'include', // 쿠키 포함
         })
         .then(response => response.ok ? window.location.href = '/login' : Promise.reject(`서버 에러 발생: ${response.status}`))
         .catch((error) => {
@@ -185,16 +179,20 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`${BACKEND_URL}/api/users/${userId}`, {
             method: 'PATCH',
             body: formData,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-            },
+            credentials: 'include', // 쿠키 포함
         })
         .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-        .then(({ profile_image_path }) => {
+        .then(({ data }) => {
             showToast('수정 완료!');
-            if (profile_image_path) {
-                currentProfilePhoto.src = profile_image_path; // 새 프로필 사진 업로드
+            if (data.profile_image_path) {
+                currentProfilePhoto.src = `${BACKEND_URL}${data.profile_image_path}`;
+profileImg.src = `${BACKEND_URL}${data.profile_image_path}`;
             }
+            console.log('프로필 업데이트 후 상태:', {
+                profileImg: profileImg.src,
+                currentProfilePhoto: currentProfilePhoto.src,
+                data,
+            }); // 디버깅 로그
             setTimeout(() => {
                 window.location.href = '/posts'; // 게시글 페이지 경로로 리다이렉트
             }, 1500); // 토스트 메시지가 표시된 후 약간의 딜레이

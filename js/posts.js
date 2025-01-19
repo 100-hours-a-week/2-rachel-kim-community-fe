@@ -9,31 +9,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let profileImagePath = null;
 
     // 서버와 통신하여 로그인 상태 확인
-    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+    fetch(`${BACKEND_URL}/api/users/auth/status`, {
         method: "GET",
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        },
+        credentials: 'include', // 쿠키 포함
     })
     .then(response => {
-        if (response.status === 403) {
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-        } else if (!response.ok) {
-            throw new Error('인증 실패');
+        if (response.ok) {
+            return response.json(); // 성공 시 JSON 데이터 반환
+        } else if (response.status === 401) {
+            window.location.href = "/login"; // 인증 실패 시 로그인 페이지로 이동
+        } else {
+            throw new Error(`HTTP Error: ${response.status}`);
         }
-        return response.json();
     })
-    .then(({ data: { user_id, profile_image_path } }) => {
-        userId = user_id; 
-        profileImagePath = profile_image_path;
-        // 프로필 이미지 업데이트
+    .then(({ user }) => {
+        userId = user.user_id;
+        profileImagePath = user.profile_image_path;
         if (profileImagePath) {
             profileImg.src = `${BACKEND_URL}${profileImagePath}`;
         }
     })
-    .catch(() => {
-        console.error('로그인 상태 확인 실패. 로그인 페이지로 리다이렉트합니다.');
+    .catch((error) => {
+        console.error('로그인 상태 확인 실패', error);
         window.location.href = '/login';
     });
 
@@ -51,8 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (target.id === 'password-link') {
                 window.location.href = `/users/${userId}/password`;  
             } else if (target.id === 'logout-link') {
-                localStorage.removeItem('authToken'); // JWT 토큰 삭제
-                window.location.href = '/login';  
+                // 서버와 통신하여 로그아웃
+                fetch(`${BACKEND_URL}/api/users/logout`, {
+                    method: 'POST',
+                    credentials: 'include', // 세션 쿠키 포함
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/login'; // 로그아웃 성공 후 리다이렉트
+                    }
+                })
+                .catch(error => console.error(`로그아웃 실패: ${error}`));
             }
         }
     });

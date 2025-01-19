@@ -11,21 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPasswordValid = false;
 
     // 서버와 통신하여 로그인 상태 확인
-    fetch(`${BACKEND_URL}/api/users/auth/check`, {
+    fetch(`${BACKEND_URL}/api/users/auth/status`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        },
+        credentials: 'include', // 쿠키 포함
     })
     .then(response => {
         if (response.ok) {
-            window.location.href = '/posts'; // 로그인 상태면 게시글 페이지로 이동
+            // 이미 로그인된 상태
+            window.location.href = '/posts';
         }
     })
     .catch(() => {
-        // 로그인되지 않은 상태, 로그인 페이지 유지
+        // 로그인되지 않은 상태, 페이지 유지
     });
-
+    
     // 이메일 유효성 검사
     emailInput.addEventListener('input', ({ target: { value } }) => {
         const email = value.trim();
@@ -72,8 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loginButton.addEventListener('click', (event) => {
         event.preventDefault();  
 
-        localStorage.removeItem('authToken'); // 기존 토큰 삭제
-
         // 서버와 통신하여 로그인(이메일, 비밀번호)
         if (isEmailValid && isPasswordValid) {
             const email = emailInput.value.trim();
@@ -81,16 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
             fetch(`${BACKEND_URL}/api/users/login`, {
                 method: 'POST',
+                credentials: 'include', // 쿠키 포함
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, password })
             })
-            .then(response => response.ok ? response.json() : Promise.reject(`서버 에러 발생: ${response.status}`))
-            .then(({ data }) => {
-                if (data?.auth_token) {
-                    localStorage.setItem('authToken', data.auth_token);  // 새 JWT 저장                
+            .then(response => {
+                if (response.ok) {
                     window.location.href = '/posts';
                 } else {
-                    helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';  // 로그인 실패 시 
+                    helperText.textContent = '*아이디 또는 비밀번호를 확인해주세요.';
                     helperText.style.display = 'block';
                 }
             })
