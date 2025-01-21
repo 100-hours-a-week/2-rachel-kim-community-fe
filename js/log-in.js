@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isEmailValid && isPasswordValid) {
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
-        
+
             fetch(`${BACKEND_URL}/api/users/login`, {
                 method: 'POST',
                 credentials: 'include', // 쿠키 포함
