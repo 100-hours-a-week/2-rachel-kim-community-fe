@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => {
             if (response.ok) {
                 console.log('조회수 업데이트 성공');
-                fetchPostDetails(); // 조회수 갱신
+                return fetchPostDetails(); // 조회수 갱신
             } else {
                 console.error('조회수 업데이트 실패:', response.status);
             }
@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeButton.classList.remove('enabled');
             }
             likeCountElement.textContent = data.likeCount;
+            fetchPostDetails(); // 좋아요 상태를 갱신한 후 게시글 전체 데이터를 다시 가져옴
         })
         .catch(err => console.error('좋아요 상태 조회 오류:', err));
     };
@@ -209,6 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`서버 에러 발생: ${response.status}`);
             }
             return fetchLikeStatus(); // 좋아요 상태 갱신
+        })
+        .then(() => {
+            fetchLikeStatus(); // 좋아요 상태 갱신
+        })
+        .then(() => {
+            fetchPostDetails(); // 게시글 데이터 전체 갱신
         })
         .catch(err => console.error('좋아요 업데이트 오류:', err));
     });
