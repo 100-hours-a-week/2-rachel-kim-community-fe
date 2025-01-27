@@ -1,116 +1,13 @@
 /* make-post.css */
-
-@font-face {
-    font-family: 'Paperlogy-2ExtraLight';      
-    src: url('/assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard';      
-    src: url('/assets/fonts/PretendardVariable.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: #F4F5F7;
-}
-
-.banner {
-    display: flex;
-    justify-content: center;  
-    align-items: center; 
-    position: relative;  
-    width: 100%;
-    height: 85px;
-    border-bottom: 1px solid #000000;
-}
-
-#banner-text {
-    font-family: 'Sandoll GogoRound', 'Paperlogy-2ExtraLight', sans-serif;
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 32px;
-    color: #000000;
-    position: relative;  
-}
-
-#back-arrow {
-    font-family: sans-serif;
-    position: absolute;  
-    left: calc(50% - 250px);  
-    font-size: 28px; 
-    font-weight: 400; 
-    color: #000000; 
-    cursor: pointer;
-}
-
-#profile-img {
-    position: absolute;  
-    right: calc(50% - 250px);  
-    cursor: pointer;
-    width: 36px;
-    height: 36px; 
-    border-radius: 50%; /* 둥글게 만들기 */
-    object-fit: cover; /* 이미지 비율 유지 */
-    overflow: hidden;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;  
-    right: calc(50% - 250px);  
-    bottom: calc(50% - 135px);
-    background-color: #ccc;
-    list-style: none;
-    padding: 0 10px;
-}
-
-.dropdown-menu.show {
-    display: block; 
-}
-
-.dropdown-menu li {
-    padding: 8px 15px;
-    gap: 10px;
-    background-color: #ccc;
-    text-align: center;
-}
-
-.dropdown-menu a {
-    padding: 5px 10px;
-    text-decoration: none;
-    color: black;
-    font-family: 'Pretendard', sans-serif;
-    font-size: 14px;
-    background-color: #ccc;
-}
-
-.dropdown-menu a:hover {
-    background-color: #E9E9E9;
-}
-
-.center-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-}
+@import url('./common.css');
 
 #post-create-text {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Paperlogy-6SemiBold';
     font-size: 24px;
-    font-weight: 700;
     line-height: 31.2px;
     text-align: center;
     color: #000000;
-    margin-bottom: 30px; 
+    margin: 30px 0; 
 }
 
 .post-create-container {
@@ -132,43 +29,38 @@
 }
 
 .common-label {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Paperlogy-6SemiBold';
     font-size: 15px;
-    font-weight: 900;
     margin: 7px 4px;
 }
 
 
 #title {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 900;
+    font-family: 'Paperlogy-4Regular';
     font-size: 15px;
     width: 100%;
     max-width: 570px;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 15px;
     margin-bottom: 15px;
+    border: 2px solid #403c5b;
 }
 
 .post-field textarea {
     all: unset;
-    border: 1px solid #000000;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 100;
+    border: 1px solid #403c5b;
+    font-family: 'Paperlogy-4Regular';
     font-size: 14px;
     width: 100%;
     max-width: 570px;
     height: 299px;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 15px;
 }
 
 #helper-text {
-    display: none;
-    color: red;
     font-size: 12px;
     margin-top: 3px;
-    margin-left: 2px;
 }
 
 .post-field input[type="file"] {
@@ -183,16 +75,18 @@
 }
 
 #file-button {
+    font-family: 'Paperlogy-4Regular';
     padding: 5px;
-    background-color: lightgray;
-    border: 1px solid #000000;
-    border-radius: 5px;
+    background-color: #9a94b8;
+    border: 2px solid #af83a5;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 400;
 }
 
 #file-name {
+    font-family: 'Paperlogy-4Regular';
     font-size: 13px;
 }
 
@@ -200,10 +94,10 @@
     width: 80%;
     max-width: 350px; 
     padding: 9px;
-    background-color: #ACA0EB; 
+    background-color: #d396d1; 
     color: #FFFFFF; 
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
     margin-top: 20px; 
@@ -211,5 +105,5 @@
 }
 
 #submit-button.active {
-    background-color: #7F6AEE;
+    background-color: #9d5b94;
 }

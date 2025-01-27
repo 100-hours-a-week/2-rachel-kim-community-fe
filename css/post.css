@@ -1,107 +1,5 @@
 /* post.css */
-
-@font-face {
-    font-family: 'Paperlogy-2ExtraLight';      
-    src: url('/assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard';      
-    src: url('/assets/fonts/PretendardVariable.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: #F4F5F7;
-}
-
-.banner {
-    display: flex;
-    justify-content: center;  
-    align-items: center; 
-    position: relative;  
-    width: 100%;
-    height: 85px;
-    border-bottom: 1px solid #000000;
-}
-
-#banner-text {
-    font-family: 'Sandoll GogoRound', 'Paperlogy-2ExtraLight', sans-serif;
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 32px;
-    color: #000000;
-    position: relative;  
-}
-
-#back-arrow {
-    font-family: sans-serif;
-    position: absolute;  
-    left: calc(50% - 250px);  
-    font-size: 28px; 
-    font-weight: 400; 
-    color: #000000; 
-    cursor: pointer;
-}
-
-#profile-img {
-    position: absolute;  
-    right: calc(50% - 250px);  
-    cursor: pointer;
-    width: 36px;
-    height: 36px; 
-    border-radius: 50%; /* 둥글게 만들기 */
-    object-fit: cover; /* 이미지 비율 유지 */
-    overflow: hidden;
-}
-
-.dropdown-menu {
-    display: none;
-    position: absolute;  
-    right: calc(50% - 250px);  
-    bottom: calc(50% - 135px);
-    background-color: #ccc;
-    list-style: none;
-    padding: 0 10px;
-}
-
-.dropdown-menu.show {
-    display: block; 
-}
-
-.dropdown-menu li {
-    padding: 8px 15px;
-    gap: 10px;
-    background-color: #ccc;
-    text-align: center;
-}
-
-.dropdown-menu a {
-    padding: 5px 10px;
-    text-decoration: none;
-    color: black;
-    font-family: 'Pretendard', sans-serif;
-    font-size: 14px;
-    background-color: #ccc;
-}
-
-.dropdown-menu a:hover {
-    background-color: #E9E9E9;
-}
-
-.center-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-}
+@import url('./common.css');
 
 #post-container {
     display: flex;
@@ -114,8 +12,7 @@
 }
 
 #title {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 700;
+    font-family: 'Paperlogy-6SemiBold';
     font-size: 24px;
     line-height: 31.2px;
     align-self: flex-start; 
@@ -133,7 +30,7 @@
     align-items: center;
     width: 100%;
     margin: 10px 0;
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Paperlogy-6SemiBold';
 }
 
 .author-info {
@@ -152,20 +49,20 @@
 }
 
 #author-name {
-    font-weight: 700;
     font-size: 15px;
     line-height: 19.5px;
     margin-right: 20px;
 }
 
 #post-date {
-    font-weight: 400;
+    font-family: 'Paperlogy-4Regular';
     font-size: 14px;
     line-height: 18.2px;
     margin-right: 5px;
 }
 
 #post-time {
+    font-family: 'Paperlogy-4Regular';
     font-weight: 400;
     font-size: 14px;
     line-height: 18.2px;
@@ -182,16 +79,16 @@
     width: 45px;
     height: 25px;
     border-radius: 8px;
-    background-color: #F4F5F7;
-    border: 1px solid rgb(150, 149, 149);  
+    background-color: #d396d1;
+    border: 2px solid #af83a5;
 }
 
 #delete-post-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
-    background-color: #F4F5F7;
-    border: 1px solid rgb(150, 149, 149);  
+    background-color: #d396d1;
+    border: 2px solid #af83a5;
 }
 
 #post-separator {
@@ -217,8 +114,7 @@
 
 .post-content {
     margin: 10px 0;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 400px;
+    font-family: 'Paperlogy-4Regular';
     font-size: 15px;
     line-height: 21.15px;
 }
@@ -230,61 +126,63 @@
 }
 
 .post-stats button {
+    font-family: 'Paperlogy-6SemiBold';
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    border-radius: 15px;
+    border-radius: 20px;
     width: 100px;
     font-weight: 800;
     font-size: 15px;
     padding: 10px 5px;
-    background-color: #d7d5d5;
-    border: none;
+    background-color: #ecedf9;
+    border: 1px solid #9a94b8;
 }
 
 .post-stats span  {
-    font-size: 20px;
+    font-family: 'Paperlogy-4Regular';
+    font-size: 15px;
     margin-bottom: 5px;
-    background-color: #d7d5d5;
+    background-color: #ecedf9;
 }
 
 #like-button.disabled {
-    background-color: #D9D9D9;
+    background-color: #ecedf9;
     color: #000;
 }
 
 #like-button.enabled {
-    background-color: #ACA0EB;
-    color: #fff;
+    background-color: #d396d1;
+    color: #ecedf9;
 }
 
 #like-button.enabled span {
-    background-color: #ACA0EB;
+    background-color: #d396d1;
 }
 
 #comment-separator {
     width: 100%;
     border: none;             
-    border-top: 1px solid #ccc; 
+    border-top: 1px solid #9a94b8; 
     margin-bottom: 20px;
 }
 
 .comment-section {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: #ecedf9;
     width: 100%;
     max-width: 595px;
     height: auto;
     max-height: 205px;
     padding: 5px 10px;
-    border-radius: 10px;
+    border-radius: 15px;
+    border: 1px solid #9a94b8; 
 }
 
 #comment-input {
     all: unset;
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 900;
+    font-family: 'Paperlogy-4Regular';
     font-size: 14px;
     width: 100%;
     height: 100%;
@@ -296,18 +194,19 @@
     width: calc(100% + 20px);
     margin: 0 -10px;  
     border: none;             
-    border-top: 1px solid #ccc; 
+    border-top: 1px dashed #9a94b8; 
 }
 
 #submit-comment-button {
+    font-family: 'Paperlogy-4Regular';
     align-self: flex-end;  
     width: 50%;
     max-width: 120px; 
     padding: 10px 0;
-    background-color: #ACA0EB; 
+    background-color: #d396d1; 
     color: #FFFFFF; 
     border: none;
-    border-radius: 13px;
+    border-radius: 15px;
     font-size: 14px;
     font-weight: 600;
     margin-top: 5px; 
@@ -317,7 +216,7 @@
 }
 
 #submit-comment-button.active {
-    background-color: #7F6AEE;
+    background-color: #9d5b94;
 }
 
 .comment-container{
@@ -341,7 +240,6 @@
 .comment-meta {
     display: flex;
     align-items: center;
-    font-family: 'Pretendard', sans-serif;
 }
 
 .comment-author-photo {
@@ -353,27 +251,27 @@
 }
 
 .comment-author-name {
-    font-weight: 900;
     font-size: 15px;
     margin-right: 20px;
+    font-family: 'Paperlogy-6SemiBold';
 }
 
 .comment-date {
-    font-weight: 400;
+    font-family: 'Paperlogy-4Regular';
     font-size: 14px;
     line-height: 18.2px;
     margin-right: 5px;
 }
 
 .comment-time {
-    font-weight: 400;
+    font-family: 'Paperlogy-4Regular';
     font-size: 14px;
     line-height: 18.2px;
 }
 
 .comment-content {
-    font-family: 'Pretendard', sans-serif;
-    font-weight: 100;
+    font-family: 'Paperlogy-4Regular';
+    font-size: 15px;
     margin: 10px 45px;
 }
 
@@ -388,99 +286,14 @@
     width: 45px;
     height: 25px;
     border-radius: 8px;
-    background-color: #F4F5F7;
-    border: 1px solid rgb(150, 149, 149);  
+    background-color: #d396d1;
+    border: 2px solid #af83a5;
 }
 
 .delete-comment-button {
     width: 45px;
     height: 25px;
     border-radius: 8px;
-    background-color: #F4F5F7;
-    border: 1px solid rgb(150, 149, 149);  
-}
-
-.overlay {
-    display: none; 
-    position: fixed; 
-    top: 0;
-    left: 0;
-    width: 100vw; 
-    height: 100vh; 
-    background: rgba(0, 0, 0, 0.5); 
-    z-index: 999; 
-}
-
-.overlay.active {
-    display: block; 
-}
-
-body.no-scroll {
-    overflow: hidden; 
-}
-
-.modal {
-    display: none; 
-    position: fixed; 
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    z-index: 1000;
-    width: 80%;
-    max-width: 300px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-.overlay.active .modal {
-    display: block; 
-}
-
-.modal-content {
-    background-color: white;
-    text-align: center;
-    font-family: 'Pretendard', sans-serif;
-}
-
-.modal-content h2 {
-    font-size: 18px;
-    font-weight: 900;
-    margin-bottom: 15px;
-    background-color: white;
-}
-
-.modal-content p {
-    font-size: 14px;
-    margin-bottom: 15px;
-    background-color: white;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    background-color: white;
-}
-
-.modal-cancel-button {
-    padding: 0 30px;
-    height: 30px;
-    background-color: black; 
-    color: white; 
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.modal-confirm-button {
-    padding: 0 30px;
-    height: 30px;
-    background-color: #ACA0EB;
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
+    background-color: #d396d1;
+    border: 2px solid #af83a5;
 }

@@ -1,71 +1,13 @@
 /* sign-in.css */
-
-@font-face {
-    font-family: 'Paperlogy-2ExtraLight';      
-    src: url('/assets/fonts/Paperlogy-2ExtraLight.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard';      
-    src: url('/assets/fonts/PretendardVariable.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: #F4F5F7;
-}
-
-.banner {
-    display: flex;
-    justify-content: center;  
-    align-items: center; 
-    position: relative;  
-    width: 100%;
-    height: 85px;
-    border-bottom: 1px solid #000000;
-}
-
-#banner-text {
-    font-family: 'Sandoll GogoRound', 'Paperlogy-2ExtraLight', sans-serif;
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 32px;
-    color: #000000;
-    position: relative;  
-}
-
-#back-arrow {
-    font-family: sans-serif;
-    position: absolute;  
-    left: calc(50% - 250px);  
-    font-size: 28px; 
-    font-weight: 400; 
-    color: #000000; 
-    cursor: pointer;
-}
-
-.center-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: calc(100vh - 85px); 
-}
+@import url('./common.css');
 
 #signup-text {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Paperlogy-6SemiBold';
     font-size: 32px;
-    font-weight: 700;
     line-height: 38px;
     text-align: center;
     color: #000000;
-    margin: 0 0 10px 0; 
+    margin: 110px 0 30px 0; 
 }
 
 .profile-photo-container {
@@ -78,18 +20,13 @@
 }
 
 .profile-photo-container p {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Paperlogy-6SemiBold';
     font-size: 13px;
-    font-weight: 600;
     color: #000000;
 }
 
 .helper-text {
-    display: none;
-    color: red;
-    font-size: 11px;
     margin-top: 4px;
-    margin-left: 2px;
 }
 
 .profile-photo-container input[type="file"] {
@@ -100,20 +37,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: #c0c0c0; 
+    width: 140px;
+    height: 170px;
+    background-color: #b3b1bc; 
     cursor: pointer;
     margin: 5px 0;  
     align-self: center;  
+    clip-path: path('M 70 45 Q 100 10 135 50 Q 160 100 70 145 Q -20 100 5 50 Q 40 10 70 45 Z');
 }
 
 .plus-icon {
+    font-family: 'Paperlogy-4Regular';
     font-size: 45px;
-    font-weight: 100;
-    color: black;
-    background-color: #c0c0c0;
+    color: #403c5b;
+    background-color: #b3b1bc;
 }
 
 .profile-photo-preview {
@@ -131,31 +68,32 @@
 }
 
 .input-area label {
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Paperlogy-6SemiBold';
     font-size: 13px; 
-    font-weight: 600;
     margin-top: 5px; 
-    margin-bottom: 5px; 
+    margin-bottom: 7px; 
     color: #000000;
 }
 
 .input-area input {
+    font-family: 'Paperlogy-4Regular';
     width: 100%;
     padding: 5px;
-    border: 1px solid #000000;
-    border-radius: 4px;
+    border: 1px solid #403c5b;
+    border-radius: 8px;
     font-size: 12px;
     color: #333;
 }
 
 #signup-button {
+    font-family: 'Paperlogy-6SemiBold';
     width: 50%;
     max-width: 310px; 
     padding: 7px;
-    background-color: #ACA0EB; 
+    background-color: #d396d1; 
     color: #FFFFFF; 
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
     margin-top: 20px; 
@@ -165,10 +103,11 @@
 }
 
 #signup-button.active {
-    background-color: #7F6AEE; 
+    background-color: #9d5b94; 
 }
 
 #login-link {
+    font-family: 'Paperlogy-4Regular';
     font-size: 12px;
     text-align: center;
     margin-top: 8px; 
