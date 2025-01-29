@@ -52,6 +52,8 @@
 <div>
 <img src="https://github.com/user-attachments/assets/dda48077-a816-4d65-abf9-728cefaa250d" width="80" alt="JS">
 <img src="https://github.com/user-attachments/assets/957a89e9-bce2-4a8a-ba05-e2aed7cea1d9" width="80" alt="HTML/CSS">
+<img src="https://github.com/user-attachments/assets/85ae00b1-6881-421d-baa4-f1ceee20c751" width="80" alt="ExpressJS">
+
 
 </div>
 
